@@ -2,6 +2,7 @@ import { useState, type ComponentType } from 'react';
 import type { SheetProps } from '../../../core/types';
 import type { Dnd5eCharacter } from '../model';
 import { CombatTab } from './CombatTab';
+import { InventoryTab } from './InventoryTab';
 import { MainTab } from './MainTab';
 import { SpellsTab } from './SpellsTab';
 import type { TabProps } from './types';
@@ -10,6 +11,7 @@ const TABS: { id: string; label: string; Component: ComponentType<TabProps> }[] 
   { id: 'main', label: 'Principale', Component: MainTab },
   { id: 'combat', label: 'Combattimento', Component: CombatTab },
   { id: 'spells', label: 'Incantesimi', Component: SpellsTab },
+  { id: 'inventory', label: 'Inventario', Component: InventoryTab },
 ];
 
 export function Sheet({ data, onChange }: SheetProps<Dnd5eCharacter>) {
