@@ -28,8 +28,8 @@ Primo sistema supportato: **D&D 5e (regole 2014)**. Architettura predisposta per
 
 - React + TypeScript
 - Vite + `vite-plugin-pwa` (service worker, manifest, offline)
-- Dexie (IndexedDB)
-- Zustand (stato applicazione)
+- Dexie (IndexedDB) + `dexie-react-hooks` (`useLiveQuery` per la lista)
+- Stato applicazione: stato React locale (nessuna libreria di stato: non serve)
 - zod (validazione dati importati/caricati)
 - Vitest + React Testing Library
 - CSS con variabili (custom properties), niente framework CSS
@@ -51,8 +51,9 @@ src/
   systems/
     dnd5e-2014/
       model.ts        tipi e schema zod dei dati inseriti
-      rules.ts        funzioni pure per valori derivati e riposi
-      rules.test.ts
+      rules.ts        funzioni pure per valori derivati
+      actions.ts      funzioni pure che modificano i dati (danno, cura, riposi)
+      labels.ts       etichette italiane
       migrate.ts      migrazioni schema
       sheet/          componenti React della scheda
       index.ts        esporta GameSystem
@@ -70,7 +71,9 @@ interface GameSystem<T> {
   createBlank(): T;
   migrate(data: unknown, fromVersion: number): unknown; // porta i dati a schemaVersion
   validate(data: unknown): T;               // zod parse, lancia errore se non valido
-  summary(data: T): string;                 // es. "Elfo Mago liv. 5"
+  getName(data: T): string;                 // nome del personaggio (copiato nel record)
+  withName(data: T, name: string): T;       // usato da crea/duplica
+  summary(data: T): string;                 // es. "Elfo · Mago 5 — liv. 5"
   Sheet: React.FC<{ data: T; onChange(next: T): void }>;
 }
 ```
@@ -150,7 +153,7 @@ Si salvano solo i valori inseriti dall'utente. I valori derivati (modificatori, 
 - **Riposo breve:** dialogo in cui l'utente sceglie quanti dadi vita spendere per tipo (non oltre i disponibili) e inserisce gli HP recuperati (tiro fatto a mano). Effetti: HP attuali += recuperati (max HP massimi), dadi vita usati aggiornati, privilegi con ripristino `breve` a usati = 0, slot del patto usati = 0.
 - **Riposo lungo:** HP attuali = massimi, temporanei = 0; recupero dadi vita spesi fino a max(1, ⌊livelloTotale / 2⌋) totali, distribuiti partendo dai dadi più grandi; tutti gli slot (inclusi patto) usati = 0; privilegi `breve` e `lungo` usati = 0; tiri contro morte azzerati; sfinimento − 1 (min 0).
 
-Entrambi implementati come funzioni pure `(data, opzioni) → data` in `rules.ts`.
+Entrambi implementati come funzioni pure `(data, opzioni) → data` in `actions.ts`.
 
 ### Danno e cura
 
