@@ -9,16 +9,17 @@ import type { TabProps } from './types';
 
 const CASTER_OPTIONS: { value: Ability | 'none'; label: string }[] = [{ value: 'none', label: 'Nessuna' }, ...ABILITY_OPTIONS];
 
-export function SpellsTab({ data, onChange }: TabProps) {
+function spellcastingOf({ data, onChange }: TabProps) {
   const sc = data.spellcasting;
   const setSc = (patch: Partial<Spellcasting>) => onChange({ ...data, spellcasting: { ...sc, ...patch } });
-  const dc = spellSaveDC(data);
-  const atk = spellAttackBonus(data);
-  // Ordinamento solo per livello (stabile): ordinare per nome sposterebbe la riga mentre si scrive.
-  const spells = [...sc.spells].sort((a, b) => a.level - b.level);
+  return { sc, setSc };
+}
 
+export function CasterSection(props: TabProps) {
+  const { sc, setSc } = spellcastingOf(props);
+  const dc = spellSaveDC(props.data);
+  const atk = spellAttackBonus(props.data);
   return (
-    <>
       <Section title="Incantatore">
         <Select
           label="Caratteristica da incantatore"
@@ -31,7 +32,12 @@ export function SpellsTab({ data, onChange }: TabProps) {
           <Stat label="Attacco con incantesimi" value={atk === null ? '—' : signed(atk)} />
         </div>
       </Section>
+  );
+}
 
+export function SlotsSection(props: TabProps) {
+  const { sc, setSc } = spellcastingOf(props);
+  return (
       <Section title="Slot incantesimo">
         <ul className="slots">
           {sc.slots.map((slot, i) => (
@@ -77,7 +83,14 @@ export function SpellsTab({ data, onChange }: TabProps) {
           <Pips label="Slot patto usati" count={sc.pact.used} max={sc.pact.max} onChange={(v) => setSc({ pact: { ...sc.pact, used: v } })} />
         </div>
       </Section>
+  );
+}
 
+export function SpellListSection(props: TabProps) {
+  const { sc, setSc } = spellcastingOf(props);
+  // Ordinamento solo per livello (stabile): ordinare per nome sposterebbe la riga mentre si scrive.
+  const spells = [...sc.spells].sort((a, b) => a.level - b.level);
+  return (
       <Section
         title="Incantesimi"
         actions={
@@ -109,6 +122,5 @@ export function SpellsTab({ data, onChange }: TabProps) {
           })}
         </ul>
       </Section>
-    </>
   );
 }

@@ -26,6 +26,7 @@
   --radius: 4px;
   --gap: 14px;
   --tabbar-h: 62px;
+  --header-h: 68px;
   --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
 
   --diamond: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M5 0L10 5L5 10L0 5Z' fill='%23d9b35b'/%3E%3C/svg%3E");
@@ -593,18 +594,38 @@ a.character-name:hover { color: var(--gold-bright); }
   to { opacity: 1; transform: none; }
 }
 
+/* Desktop: 3 tab in alto, ogni tab dispone le sue card su 3 colonne. */
 @media (min-width: 1024px) {
-  .sheet-panels {
-    max-width: 1440px;
+  .sheet-header { height: var(--header-h); }
+  .sheet-panels { max-width: 1440px; padding: 20px 24px 40px; }
+  .panel[data-active='true'] {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 20px;
     align-items: start;
-    padding-bottom: 32px;
   }
-  .panel[data-active='false'] { display: block; }
-  .panel { animation: none !important; }
-  .tabbar { display: none; }
+  .panel-column { min-width: 0; }
+
+  .sheet[data-layout='desktop'] .tabbar {
+    position: sticky;
+    top: var(--header-h);
+    bottom: auto;
+    justify-content: center;
+    gap: 6px;
+    padding: 0 24px;
+    box-shadow: 0 1px 0 var(--ink-2), 0 2px 0 var(--gold-line), 0 10px 24px rgba(0, 0, 0, 0.45);
+    border-top: 0;
+    border-bottom: 1px solid var(--gold-dim);
+  }
+  .sheet[data-layout='desktop'] .tab {
+    flex: 0 0 auto;
+    flex-direction: row;
+    gap: 10px;
+    min-height: 52px;
+    padding: 0 22px;
+    font-size: 1rem;
+  }
+  .sheet[data-layout='desktop'] .tab[aria-selected='true']::before { top: auto; bottom: -1px; left: 12%; right: 12%; }
 }
 
 /* Su schermi stretti: solo icone, etichetta visibile per il tab attivo. */

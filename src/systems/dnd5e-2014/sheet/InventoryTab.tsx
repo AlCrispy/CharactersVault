@@ -6,14 +6,15 @@ import { carryingCapacityKg, totalWeightKg } from '../rules';
 import { removeById, updateById } from './listOps';
 import type { TabProps } from './types';
 
-export function InventoryTab({ data, onChange }: TabProps) {
+function inventoryOf({ data, onChange }: TabProps) {
   const inv = data.inventory;
   const setInv = (patch: Partial<Inventory>) => onChange({ ...data, inventory: { ...inv, ...patch } });
-  const weight = totalWeightKg(data);
-  const capacity = carryingCapacityKg(data);
+  return { inv, setInv };
+}
 
+export function CoinsSection(props: TabProps) {
+  const { inv, setInv } = inventoryOf(props);
   return (
-    <>
       <Section title="Monete">
         <div className="coins">
           {COINS.map((k) => (
@@ -28,7 +29,14 @@ export function InventoryTab({ data, onChange }: TabProps) {
           ))}
         </div>
       </Section>
+  );
+}
 
+export function ItemsSection(props: TabProps) {
+  const { inv, setInv } = inventoryOf(props);
+  const weight = totalWeightKg(props.data);
+  const capacity = carryingCapacityKg(props.data);
+  return (
       <Section
         title="Oggetti"
         actions={
@@ -78,6 +86,5 @@ export function InventoryTab({ data, onChange }: TabProps) {
           })}
         </ul>
       </Section>
-    </>
   );
 }

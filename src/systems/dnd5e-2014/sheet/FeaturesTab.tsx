@@ -5,7 +5,7 @@ import { newFeature, type Feature } from '../model';
 import { removeById, updateById } from './listOps';
 import type { TabProps } from './types';
 
-export function FeaturesTab({ data, onChange }: TabProps) {
+export function FeaturesSection({ data, onChange }: TabProps) {
   const setFeatures = (features: Feature[]) => onChange({ ...data, features });
 
   return (
