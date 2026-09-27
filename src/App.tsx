@@ -1,7 +1,16 @@
+import { useEffect, useState } from 'react';
+import { CharacterList } from './app/CharacterList';
+import { useRoute } from './app/route';
+import { SheetHost } from './app/SheetHost';
+import { requestPersistence } from './core/storage';
+
 export default function App() {
-  return (
-    <main className="page">
-      <h1>Characters Vault</h1>
-    </main>
-  );
+  const route = useRoute();
+  const [persisted, setPersisted] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    void requestPersistence().then(setPersisted);
+  }, []);
+
+  return route.name === 'sheet' ? <SheetHost key={route.id} id={route.id} /> : <CharacterList persisted={persisted} />;
 }

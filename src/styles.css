@@ -35,8 +35,12 @@ h3 { font-size: 0.95rem; margin: 16px 0 8px; color: var(--muted); }
 .section-header { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 10px; }
 
 .field { display: flex; flex-direction: column; gap: 4px; min-width: 0; flex: 1; }
-.field-label { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+.field-label {
+  font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
 .field.narrow { flex: 0 0 72px; }
+.row > .field:not(.narrow) { min-width: 120px; }
 input[type='text'], select, textarea {
   width: 100%; background: var(--surface-2); color: var(--text); border: 1px solid var(--border);
   border-radius: 8px; padding: 8px 10px; font: inherit; min-height: 40px;
