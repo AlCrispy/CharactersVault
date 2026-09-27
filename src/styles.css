@@ -319,15 +319,58 @@ input[type='checkbox']:focus-visible, button:focus-visible, a:focus-visible {
 .skills { list-style: none; margin: 10px 0; padding: 0; }
 .skill {
   display: grid;
-  grid-template-columns: 118px 1fr 58px 46px;
+  grid-template-columns: 34px 1fr 58px 46px;
   gap: 8px;
   align-items: center;
   padding: 5px 0;
   border-bottom: 1px dotted var(--gold-line);
 }
 .skill:last-child { border-bottom: 0; }
-.skill select, .skill input[type='text'] { min-height: 34px; padding-top: 4px; padding-bottom: 4px; }
+.skill input[type='text'] { min-height: 34px; padding-top: 4px; padding-bottom: 4px; }
 .skill-name small { font-family: var(--font-caps); }
+
+/* Rombo a tre stati: nessuna ◇, competente ◆, maestria ◈ */
+.prof-toggle {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  background: none;
+  border: 0;
+  border-radius: 50%;
+  cursor: pointer;
+}
+.prof-gem {
+  position: relative;
+  width: 14px;
+  height: 14px;
+  border: 1.5px solid var(--gold-dim);
+  border-radius: 2px;
+  background: var(--ink-3);
+  transform: rotate(45deg);
+  transition: background 0.2s var(--ease), border-color 0.2s var(--ease), box-shadow 0.2s var(--ease), transform 0.15s var(--ease);
+}
+.prof-gem::after {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  border: 1.5px solid var(--gold);
+  border-radius: 3px;
+  opacity: 0;
+  transform: scale(0.6);
+  transition: opacity 0.2s var(--ease), transform 0.25s var(--ease);
+}
+.prof-toggle:hover .prof-gem { border-color: var(--gold); }
+.prof-toggle:active .prof-gem { transform: rotate(45deg) scale(0.85); }
+.prof-toggle[data-level='proficient'] .prof-gem,
+.prof-toggle[data-level='expertise'] .prof-gem {
+  border-color: var(--gold-bright);
+  background: radial-gradient(circle at 35% 35%, var(--gold-bright), var(--gold) 55%, #8f6e28);
+  box-shadow: 0 0 8px rgba(217, 179, 91, 0.45);
+}
+.prof-toggle[data-level='expertise'] .prof-gem { box-shadow: 0 0 14px rgba(242, 215, 143, 0.6); }
+.prof-toggle[data-level='expertise'] .prof-gem::after { opacity: 1; transform: none; }
 .skill-value { text-align: right; font-weight: 700; font-size: 1.1rem; color: var(--gold-bright); }
 
 /* ——— Punti ferita ——— */
@@ -576,7 +619,7 @@ a.character-name:hover { color: var(--gold-bright); }
   .abilities { grid-template-columns: repeat(2, 1fr); }
   .coins { grid-template-columns: repeat(3, 1fr); }
   .grid-3 { grid-template-columns: 1fr 1fr; }
-  .skill { grid-template-columns: 104px 1fr 52px 40px; gap: 6px; }
+  .skill { grid-template-columns: 32px 1fr 52px 40px; gap: 6px; }
   h1 { font-size: 1.7rem; }
 }
 

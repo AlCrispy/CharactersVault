@@ -34,7 +34,10 @@ describe('tab Principale', () => {
     await user.type(level, '5');
     expect(panel().getByLabelText('Bonus competenza')).toHaveTextContent('+3');
 
-    await user.selectOptions(panel().getByLabelText('Competenza Furtività'), 'expertise');
+    const stealth = panel().getByRole('button', { name: /^Competenza Furtività/ });
+    await user.click(stealth);
+    await user.click(stealth);
+    expect(stealth).toHaveAccessibleName('Competenza Furtività: maestria');
     expect(panel().getByLabelText('Bonus Furtività')).toHaveTextContent('+6');
 
     await user.click(panel().getByLabelText(/Factotum/));

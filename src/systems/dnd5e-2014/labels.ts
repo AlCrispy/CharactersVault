@@ -1,7 +1,6 @@
 import {
   ABILITIES,
   ARMOR_TYPES,
-  PROFICIENCY_LEVELS,
   RECHARGE_TYPES,
   type Ability,
   type ArmorType,
@@ -51,7 +50,7 @@ export const ARMOR_LABEL: Record<ArmorType, string> = {
 };
 
 export const PROFICIENCY_LABEL: Record<ProficiencyLevel, string> = {
-  none: '—',
+  none: 'Nessuna competenza',
   proficient: 'Competente',
   expertise: 'Maestria',
 };
@@ -66,5 +65,4 @@ export const COIN_LABEL: Record<Coin, string> = { cp: 'mr', sp: 'ma', ep: 'me', 
 
 export const ABILITY_OPTIONS = ABILITIES.map((a) => ({ value: a, label: ABILITY_LABEL[a].long }));
 export const ARMOR_OPTIONS = ARMOR_TYPES.map((t) => ({ value: t, label: ARMOR_LABEL[t] }));
-export const PROFICIENCY_OPTIONS = PROFICIENCY_LEVELS.map((p) => ({ value: p, label: PROFICIENCY_LABEL[p] }));
 export const RECHARGE_OPTIONS = RECHARGE_TYPES.map((r) => ({ value: r, label: RECHARGE_LABEL[r] }));

@@ -1,9 +1,10 @@
 import { Checkbox, NumberInput, Section, Select, Stat, TextArea, TextInput } from '../../../ui/fields';
 import { signed } from '../../../ui/format';
-import { ABILITY_LABEL, PROFICIENCY_OPTIONS, SKILL_LABEL } from '../labels';
+import { ABILITY_LABEL, SKILL_LABEL } from '../labels';
 import { ABILITIES, HIT_DIE_KEYS, newClass, SKILL_ABILITY, SKILLS, type Dnd5eCharacter, type HitDie, type HitDieKey } from '../model';
 import { abilityModifier, passivePerception, proficiencyBonus, savingThrow, skillBonus, totalLevel } from '../rules';
 import { removeById, updateById } from './listOps';
+import { ProficiencyToggle } from './ProficiencyToggle';
 import type { TabProps } from './types';
 
 const DIE_OPTIONS = HIT_DIE_KEYS.map((k) => ({ value: k, label: k }));
@@ -112,11 +113,9 @@ export function MainTab({ data, onChange }: TabProps) {
             const entry = data.skills[s];
             return (
               <li className="skill" key={s}>
-                <Select
-                  hideLabel
-                  label={`Competenza ${name}`}
-                  value={entry.level}
-                  options={PROFICIENCY_OPTIONS}
+                <ProficiencyToggle
+                  label={name}
+                  level={entry.level}
                   onChange={(v) => set('skills', { ...data.skills, [s]: { ...entry, level: v } })}
                 />
                 <span className="skill-name">
