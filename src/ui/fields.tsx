@@ -121,14 +121,25 @@ export function Section({ title, children, actions }: { title: string; children:
         <h2>{title}</h2>
         {actions}
       </header>
+      <div className="ornament" aria-hidden="true">
+        ❖
+      </div>
       {children}
     </section>
   );
 }
 
-export function Stat({ label, value, ariaLabel }: { label: string; value: string | number; ariaLabel?: string }) {
+interface StatProps {
+  label: string;
+  value: string | number;
+  ariaLabel?: string;
+  /** `shield` disegna il valore dentro uno scudo (es. Classe Armatura). */
+  variant?: 'shield';
+}
+
+export function Stat({ label, value, ariaLabel, variant }: StatProps) {
   return (
-    <div className="stat">
+    <div className={variant ? `stat ${variant}` : 'stat'}>
       <span className="stat-label">{label}</span>
       <output className="stat-value" aria-label={ariaLabel ?? label}>
         {value}

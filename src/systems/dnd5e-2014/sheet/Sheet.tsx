@@ -1,3 +1,4 @@
+import { Backpack, Crown, Feather, ScrollText, Swords, WandSparkles, type LucideIcon } from 'lucide-react';
 import { useState, type ComponentType } from 'react';
 import type { SheetProps } from '../../../core/types';
 import type { Dnd5eCharacter } from '../model';
@@ -9,13 +10,13 @@ import { NotesTab } from './NotesTab';
 import { SpellsTab } from './SpellsTab';
 import type { TabProps } from './types';
 
-const TABS: { id: string; label: string; Component: ComponentType<TabProps> }[] = [
-  { id: 'main', label: 'Principale', Component: MainTab },
-  { id: 'combat', label: 'Combattimento', Component: CombatTab },
-  { id: 'spells', label: 'Incantesimi', Component: SpellsTab },
-  { id: 'inventory', label: 'Inventario', Component: InventoryTab },
-  { id: 'features', label: 'Privilegi', Component: FeaturesTab },
-  { id: 'notes', label: 'Note', Component: NotesTab },
+const TABS: { id: string; label: string; Icon: LucideIcon; Component: ComponentType<TabProps> }[] = [
+  { id: 'main', label: 'Principale', Icon: ScrollText, Component: MainTab },
+  { id: 'combat', label: 'Combattimento', Icon: Swords, Component: CombatTab },
+  { id: 'spells', label: 'Incantesimi', Icon: WandSparkles, Component: SpellsTab },
+  { id: 'inventory', label: 'Inventario', Icon: Backpack, Component: InventoryTab },
+  { id: 'features', label: 'Privilegi', Icon: Crown, Component: FeaturesTab },
+  { id: 'notes', label: 'Note', Icon: Feather, Component: NotesTab },
 ];
 
 export function Sheet({ data, onChange }: SheetProps<Dnd5eCharacter>) {
@@ -30,9 +31,18 @@ export function Sheet({ data, onChange }: SheetProps<Dnd5eCharacter>) {
         ))}
       </div>
       <nav className="tabbar" role="tablist">
-        {TABS.map((t) => (
-          <button key={t.id} type="button" role="tab" className="tab" aria-selected={active === t.id} onClick={() => setActive(t.id)}>
-            {t.label}
+        {TABS.map(({ id, label, Icon }) => (
+          <button
+            key={id}
+            type="button"
+            role="tab"
+            className="tab"
+            aria-label={label}
+            aria-selected={active === id}
+            onClick={() => setActive(id)}
+          >
+            <Icon aria-hidden="true" size={20} strokeWidth={1.5} />
+            <span>{label}</span>
           </button>
         ))}
       </nav>

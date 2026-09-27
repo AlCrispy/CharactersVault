@@ -17,6 +17,9 @@ export function CombatTab({ data, onChange }: TabProps) {
   const [amount, setAmount] = useState(0);
   const [resting, setResting] = useState(false);
   const totals = hitDiceTotals(data);
+  const { current, max, temp } = data.hp;
+  const hpPct = max > 0 ? Math.min(1, current / max) : 0;
+  const tempPct = max > 0 ? Math.min(1 - hpPct, temp / max) : 0;
 
   function handleLongRest() {
     if (window.confirm('Riposo lungo: ripristinare PF, slot incantesimo, dadi vita e privilegi?')) onChange(longRest(data));
@@ -28,6 +31,10 @@ export function CombatTab({ data, onChange }: TabProps) {
         <div className="stats-row">
           <Stat label="PF attuali" value={`${data.hp.current} / ${data.hp.max}`} />
           <Stat label="PF temporanei" value={data.hp.temp} />
+        </div>
+        <div className="hp-bar" aria-hidden="true">
+          <div className="hp-fill" style={{ width: `${hpPct * 100}%` }} />
+          <div className="hp-temp" style={{ width: `${tempPct * 100}%` }} />
         </div>
         <div className="row">
           <NumberInput label="Quantità" value={amount} min={0} max={999} onChange={setAmount} />
@@ -61,7 +68,7 @@ export function CombatTab({ data, onChange }: TabProps) {
 
       <Section title="Difesa e movimento">
         <div className="stats-row">
-          <Stat label="Classe Armatura" value={armorClass(data)} />
+          <Stat label="CA" ariaLabel="Classe Armatura" variant="shield" value={armorClass(data)} />
           <Stat label="Iniziativa" value={signed(initiative(data))} />
           <Stat label="Velocità" value={`${formatNumber(data.speedMeters)} m`} />
         </div>

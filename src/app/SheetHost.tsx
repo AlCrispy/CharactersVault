@@ -71,7 +71,10 @@ function LoadedSheet({ id, system, initial }: { id: string; system: GameSystem<u
         <a href="#/" className="btn small">
           ← Lista
         </a>
-        <span className="sheet-title">{system.getName(data) || 'Senza nome'}</span>
+        <div className="sheet-heading">
+          <span className="sheet-title">{system.getName(data) || 'Senza nome'}</span>
+          <span className="sheet-subtitle">{system.summary(data)}</span>
+        </div>
         <span className={`save-status ${status}`} role="status">
           {SAVE_LABEL[status]}
         </span>

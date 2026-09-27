@@ -74,7 +74,12 @@ export function CharacterList({ persisted }: { persisted: boolean | null }) {
   return (
     <main className="page">
       <header className="page-header">
+        <svg className="logo" viewBox="0 0 512 512" aria-hidden="true">
+          <polygon points="256,72 415,164 415,348 256,440 97,348 97,164" fill="none" stroke="currentColor" strokeWidth="28" strokeLinejoin="round" />
+          <polygon points="256,150 350,316 162,316" fill="currentColor" />
+        </svg>
         <h1>Characters Vault</h1>
+        <p className="tagline">Il grimorio dei tuoi eroi</p>
       </header>
 
       {persisted === false && (
@@ -156,6 +161,9 @@ function CharacterRow({ record, onExport, onDuplicate, onDelete }: RowProps) {
 
   return (
     <li className="card character-row">
+      <span className="monogram" aria-hidden="true">
+        {name.trim().charAt(0).toUpperCase()}
+      </span>
       <div className="character-info">
         {loaded.status === 'ok' ? (
           <a className="character-name" href={routeToHash({ name: 'sheet', id: record.id })}>

@@ -70,15 +70,22 @@ export function MainTab({ data, onChange }: TabProps) {
             const name = ABILITY_LABEL[a].long;
             return (
               <div className="ability" key={a}>
+                <span className="ability-name" aria-hidden="true">
+                  {name}
+                </span>
+                <output className="ability-mod" aria-label={`Modificatore ${name}`}>
+                  {signed(abilityModifier(data.abilities[a]))}
+                </output>
                 <NumberInput
+                  hideLabel
                   label={name}
+                  className="ability-score"
                   value={data.abilities[a]}
                   min={1}
                   max={30}
                   onChange={(v) => set('abilities', { ...data.abilities, [a]: v })}
                 />
-                <Stat label="Mod" ariaLabel={`Modificatore ${name}`} value={signed(abilityModifier(data.abilities[a]))} />
-                <div className="row">
+                <div className="ability-save">
                   <Checkbox
                     label="TS"
                     ariaLabel={`Competenza tiro salvezza ${name}`}

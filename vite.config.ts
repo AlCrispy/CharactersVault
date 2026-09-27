@@ -8,14 +8,18 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
+      workbox: {
+        // Default: solo js/css/html. Servono anche font e icone per l'uso offline.
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
+      },
       includeAssets: ['favicon.ico', 'icon.svg', 'apple-touch-icon-180x180.png'],
       manifest: {
         name: 'Characters Vault',
         short_name: 'Characters Vault',
         description: 'Schede per giochi di ruolo, anche offline.',
         lang: 'it',
-        theme_color: '#121418',
-        background_color: '#121418',
+        theme_color: '#0e0b08',
+        background_color: '#0e0b08',
         display: 'standalone',
         start_url: './',
         scope: './',
