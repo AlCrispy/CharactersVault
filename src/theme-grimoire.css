@@ -1,0 +1,209 @@
+/*
+ * ——— Tema Grimorio: abbellimenti ———
+ * Manoscritto miniato a lume di candela: la base è in styles.css, qui gli effetti propri del tema.
+ * Luce che tremola e braci che salgono sullo sfondo, volute dorate agli angoli, capolettera miniati,
+ * sigilli di ceralacca, riflessi di metallo sull'oro. Animazioni solo di opacità e transform
+ * (tranne il foglio d'oro del titolo e il sangue nella barra PF: elementi piccoli).
+ */
+
+/* Lo sfondo passa su <html> così i livelli fissi (luce, braci) stanno sopra il fondo ma sotto la pagina. */
+:root[data-theme='grimoire'] {
+  background:
+    var(--grain),
+    radial-gradient(ellipse 120% 70% at 50% -10%, #2a1f12 0%, rgba(42, 31, 18, 0) 60%),
+    radial-gradient(ellipse 90% 60% at 50% 110%, #1a0f0b 0%, rgba(26, 15, 11, 0) 70%),
+    var(--ink);
+  scrollbar-color: var(--gold-dim) transparent;
+}
+@media (max-width: 1023px) {
+  :root[data-theme='grimoire'] { background: radial-gradient(ellipse 120% 70% at 50% -10%, #2a1f12 0%, rgba(42, 31, 18, 0) 60%), var(--ink); }
+}
+:root[data-theme='grimoire'] body { background: transparent; }
+
+/* Luce di candela che tremola. */
+:root[data-theme='grimoire'] body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 55% 45% at 12% 0%, rgba(255, 170, 80, 0.16), transparent 70%),
+    radial-gradient(ellipse 45% 35% at 92% 8%, rgba(255, 150, 60, 0.09), transparent 70%);
+  animation: candle 5.5s infinite;
+}
+@keyframes candle {
+  0%, 100% { opacity: 1; }
+  12% { opacity: 0.82; }
+  20% { opacity: 0.95; }
+  38% { opacity: 0.78; }
+  46% { opacity: 1; }
+  63% { opacity: 0.86; }
+  71% { opacity: 0.97; }
+  88% { opacity: 0.8; }
+}
+/* Braci che salgono. */
+:root[data-theme='grimoire'] body::after {
+  content: '';
+  position: fixed;
+  inset: 0 0 -260px;
+  z-index: -1;
+  pointer-events: none;
+  background: url('./assets/grimoire/embers.svg') repeat;
+  opacity: 0.55;
+  animation: ember-rise 70s linear infinite;
+  will-change: transform;
+}
+@keyframes ember-rise { to { transform: translateY(-260px); } }
+
+/* ——— Card: volute dorate agli angoli e bagliore di candela dall'alto ——— */
+
+:root[data-theme='grimoire'] .card { background: radial-gradient(ellipse 90% 60% at 50% 0%, rgba(217, 179, 91, 0.07), transparent 70%), linear-gradient(180deg, rgba(30, 24, 16, 0.96), rgba(20, 16, 11, 0.96)); }
+:root[data-theme='grimoire'] .card::before {
+  inset: -4px;
+  background-image:
+    url('./assets/grimoire/corner-tl.svg'),
+    url('./assets/grimoire/corner-tr.svg'),
+    url('./assets/grimoire/corner-bl.svg'),
+    url('./assets/grimoire/corner-br.svg');
+  background-size: 30px 30px;
+}
+
+/* Divisori: fregio a volute al posto del rombo. */
+:root[data-theme='grimoire'] .ornament { height: 16px; color: transparent; background: url('./assets/grimoire/flourish.svg') center / 120px 16px no-repeat; }
+:root[data-theme='grimoire'] .ornament::before { margin-right: 60px; }
+:root[data-theme='grimoire'] .ornament::after { margin-left: 60px; }
+:root[data-theme='grimoire'] .create-form h2::after { content: ''; width: 120px; height: 16px; margin: 8px auto 0; background: url('./assets/grimoire/flourish.svg') center / contain no-repeat; }
+
+/* Capolettera miniato. */
+:root[data-theme='grimoire'] .section-header h2::first-letter,
+:root[data-theme='grimoire'] .create-form h2::first-letter {
+  font-size: 1.5em;
+  color: var(--gold-bright);
+  text-shadow: 0 0 14px rgba(242, 215, 143, 0.6), 0 2px 0 #000;
+}
+
+/* ——— Caratteristiche: chiave di volta dorata sull'arco ——— */
+
+:root[data-theme='grimoire'] .ability { position: relative; }
+:root[data-theme='grimoire'] .ability::before {
+  content: '';
+  position: absolute;
+  top: 5px;
+  left: 50%;
+  width: 7px;
+  height: 7px;
+  margin-left: -3.5px;
+  background: var(--gold);
+  transform: rotate(45deg);
+  box-shadow: 0 0 8px rgba(217, 179, 91, 0.6);
+}
+:root[data-theme='grimoire'] .ability:focus-within::before { background: var(--gold-bright); box-shadow: 0 0 14px rgba(242, 215, 143, 0.9); }
+
+/* Pips e competenze: l'oro prende luce quando lo spunti. */
+:root[data-theme='grimoire'] input[type='checkbox']:checked { animation: gold-glint 0.6s var(--ease); }
+:root[data-theme='grimoire'] .prof-toggle[data-level='proficient'] .prof-gem,
+:root[data-theme='grimoire'] .prof-toggle[data-level='expertise'] .prof-gem { animation: gold-glint 0.6s var(--ease); }
+@keyframes gold-glint {
+  0% { transform: rotate(45deg) scale(0.4); filter: brightness(2.2); }
+  60% { transform: rotate(45deg) scale(1.3); filter: brightness(1.6); }
+  100% { transform: rotate(45deg) scale(1); filter: none; }
+}
+
+/* ——— CA: scudo dorato attraversato da un riflesso di metallo ——— */
+
+:root[data-theme='grimoire'] .stat.shield::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(115deg, transparent 35%, rgba(255, 240, 200, 0.4) 50%, transparent 65%);
+  transform: translateX(-120%);
+  animation: gleam 6s ease-in-out infinite;
+}
+@keyframes gleam {
+  0%, 70% { transform: translateX(-120%); }
+  100% { transform: translateX(120%); }
+}
+
+/* ——— Punti ferita: sangue che scorre piano ——— */
+
+:root[data-theme='grimoire'] .hp-fill {
+  background: linear-gradient(90deg, #5e1a13, var(--blood) 25%, var(--blood-bright) 50%, var(--blood) 75%, #5e1a13) 0 0 / 200% 100%;
+  animation: blood-flow 7s linear infinite;
+}
+@keyframes blood-flow { to { background-position: 200% 0; } }
+
+:root[data-theme='grimoire'] .skill { transition: background 0.25s var(--ease); }
+@media (hover: hover) {
+  :root[data-theme='grimoire'] .skill:hover { background: linear-gradient(90deg, transparent, rgba(217, 179, 91, 0.08), transparent); }
+}
+
+/* ——— Lista personaggi ——— */
+
+/* Logo al centro di una raggiera d'oro che ruota, con alone di candela. */
+:root[data-theme='grimoire'] .page-header { position: relative; isolation: isolate; padding-top: 58px; }
+:root[data-theme='grimoire'] .page-header::before,
+:root[data-theme='grimoire'] .page-header::after { content: ''; position: absolute; left: 50%; z-index: -1; pointer-events: none; border-radius: 50%; }
+:root[data-theme='grimoire'] .page-header::before {
+  top: -39px;
+  width: 250px;
+  height: 250px;
+  margin-left: -125px;
+  background: repeating-conic-gradient(rgba(217, 179, 91, 0.35) 0 2deg, transparent 2deg 10deg);
+  -webkit-mask: radial-gradient(circle, transparent 22%, #000 30%, transparent 70%);
+  mask: radial-gradient(circle, transparent 22%, #000 30%, transparent 70%);
+  animation: ward-spin 140s linear infinite;
+  will-change: transform;
+}
+:root[data-theme='grimoire'] .page-header::after {
+  top: 16px;
+  width: 140px;
+  height: 140px;
+  margin-left: -70px;
+  background: radial-gradient(circle, rgba(242, 200, 120, 0.3), transparent 65%);
+  animation: candle 5.5s infinite;
+}
+@keyframes ward-spin { to { transform: rotate(360deg); } }
+/* Titolo in foglia d'oro con riflesso che scorre. */
+:root[data-theme='grimoire'] h1 {
+  background: linear-gradient(100deg, #a47c30 20%, #f7e3a3 40%, #d9b35b 50%, #fff3c9 55%, #a47c30 75%) 0 0 / 250% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: none;
+  filter: drop-shadow(0 0 12px rgba(217, 179, 91, 0.35));
+  animation: gold-foil 9s linear infinite;
+}
+@keyframes gold-foil { to { background-position: 250% 0; } }
+
+/* Monogramma: sigillo di ceralacca. */
+:root[data-theme='grimoire'] .monogram {
+  color: rgba(255, 214, 196, 0.85);
+  background:
+    radial-gradient(circle, transparent 57%, rgba(0, 0, 0, 0.28) 60%, transparent 64%),
+    radial-gradient(circle at 35% 30%, #c4473c, #8e2219 60%, #5e140e);
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  clip-path: polygon(99.1% 50.0%, 93.9% 59.3%, 94.6% 69.9%, 86.1% 76.2%, 82.7% 86.3%, 72.3% 88.6%, 65.4% 97.5%, 54.7% 95.1%, 44.9% 98.3%, 36.1% 92.8%, 25.7% 92.1%, 19.3% 84.1%, 10.1% 79.0%, 8.3% 68.6%, 1.9% 60.2%, 4.9% 50.0%, 1.1% 39.6%, 8.3% 31.4%, 9.9% 20.9%, 20.1% 16.8%, 25.6% 7.7%, 35.9% 6.5%, 44.9% 1.5%, 54.8% 4.5%, 65.2% 3.3%, 72.9% 10.3%, 83.5% 12.8%, 86.2% 23.7%, 95.4% 29.8%, 94.7% 40.5%);
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.55), 0 1px 0 rgba(255, 180, 160, 0.3);
+}
+
+/* ——— Tab attiva: gioiello al centro della linea d'oro ——— */
+
+:root[data-theme='grimoire'] .tab[aria-selected='true']::after {
+  content: '';
+  position: absolute;
+  top: -4px;
+  left: 50%;
+  width: 7px;
+  height: 7px;
+  margin-left: -3.5px;
+  background: var(--gold-bright);
+  transform: rotate(45deg);
+  box-shadow: 0 0 10px rgba(242, 215, 143, 0.8);
+}
+@media (min-width: 1024px) {
+  :root[data-theme='grimoire'] .sheet[data-layout='desktop'] .tab[aria-selected='true']::after { top: auto; bottom: -4px; }
+}

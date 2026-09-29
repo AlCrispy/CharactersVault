@@ -4,6 +4,7 @@ import App from './App';
 import './systems';
 import './fonts';
 import './styles.css';
+import './theme-grimoire.css';
 import './theme-heraldic.css';
 import './theme-abjurer.css';
 import { applyTheme, getStoredTheme } from './ui/theme';
