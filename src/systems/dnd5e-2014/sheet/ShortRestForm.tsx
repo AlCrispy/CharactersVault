@@ -18,7 +18,7 @@ export function ShortRestForm({ data, onConfirm, onCancel }: Props) {
   const available = HIT_DIE_KEYS.filter((k) => totals[k] - data.hitDiceUsed[k] > 0);
 
   return (
-    <div className="card inset" role="group" aria-label="Riposo breve">
+    <div>
       <p className="muted">
         Tira i dadi vita che spendi e aggiungi a ciascuno il modificatore di Costituzione ({signed(abilityModifier(data.abilities.con))}).
       </p>

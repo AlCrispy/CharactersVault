@@ -38,7 +38,6 @@ describe('layout desktop', () => {
       'Punti ferita',
       'Difesa e movimento',
       'Condizioni',
-      'Dadi vita e riposi',
       'Attacchi',
     ]);
     expect(headings('Magia ed equipaggiamento')).toEqual(['Incantatore', 'Incantesimi', 'Monete', 'Oggetti']);

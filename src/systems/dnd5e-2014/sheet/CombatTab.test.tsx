@@ -1,6 +1,6 @@
 import { screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { createBlank, newClass } from '../model';
 import { renderSheet } from './testUtils';
 
@@ -40,43 +40,9 @@ describe('tab Combattimento', () => {
     expect(data().hp.current).toBe(20);
   });
 
-  it('riposo breve spende dadi vita e recupera PF', async () => {
-    const user = userEvent.setup();
-    const c = wounded();
-    c.hp.current = 5;
-    const { data } = renderSheet(c);
-    await user.click(panel().getByRole('button', { name: 'Riposo breve' }));
-    const spend = panel().getByLabelText('Spendi d8');
-    await user.clear(spend);
-    await user.type(spend, '2');
-    const hp = panel().getByLabelText('PF recuperati');
-    await user.clear(hp);
-    await user.type(hp, '9');
-    await user.click(panel().getByRole('button', { name: 'Conferma riposo breve' }));
-    expect(data().hitDiceUsed.d8).toBe(2);
-    expect(data().hp.current).toBe(14);
-    expect(panel().getByLabelText('Dadi vita d8 disponibili')).toHaveTextContent('1 / 3');
-    expect(panel().queryByLabelText('PF recuperati')).not.toBeInTheDocument();
-  });
-
-  it('riposo lungo dopo conferma', async () => {
-    const user = userEvent.setup();
-    vi.spyOn(window, 'confirm').mockReturnValue(true);
-    const c = wounded();
-    c.hp.current = 1;
-    const { data } = renderSheet(c);
-    await user.click(panel().getByRole('button', { name: 'Riposo lungo' }));
-    expect(data().hp).toEqual({ max: 20, current: 20, temp: 0 });
-  });
-
-  it('riposo lungo annullato non cambia nulla', async () => {
-    const user = userEvent.setup();
-    vi.spyOn(window, 'confirm').mockReturnValue(false);
-    const c = wounded();
-    c.hp.current = 1;
-    const { data } = renderSheet(c);
-    await user.click(panel().getByRole('button', { name: 'Riposo lungo' }));
-    expect(data().hp.current).toBe(1);
+  it('dadi vita nascosti senza classe', () => {
+    renderSheet();
+    expect(panel().queryByRole('heading', { name: 'Dadi vita' })).toBeNull();
   });
 
   it('le risorse di classe compaiono solo con la classe', async () => {

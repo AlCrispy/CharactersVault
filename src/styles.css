@@ -647,3 +647,28 @@ a.character-name:hover { color: var(--gold-bright); }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
+
+/* ——— Azioni nell'header e finestre modali ——— */
+
+.header-actions { display: flex; gap: 8px; }
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: rgba(8, 6, 4, 0.72);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  animation: rise 0.2s var(--ease);
+}
+.modal { width: min(480px, 100%); max-height: calc(100dvh - 32px); overflow-y: auto; background: linear-gradient(180deg, var(--ink-3), var(--ink-2)); }
+.modal h2 { margin-top: 0; }
+
+@media (max-width: 520px) {
+  .header-actions .btn span,
+  .back-label { display: none; }
+  .header-actions .btn { padding: 4px 10px; }
+}

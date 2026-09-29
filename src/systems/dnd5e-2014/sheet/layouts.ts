@@ -2,7 +2,7 @@ import { Backpack, Crown, Feather, ScrollText, Shield, Swords, WandSparkles, typ
 import type { ComponentType } from 'react';
 import { AttacksSection } from './AttacksSection';
 import { ClassResourcesSection } from './ClassResourcesSection';
-import { ConditionsSection, DefenseSection, HitPointsSection, RestSection } from './CombatTab';
+import { ConditionsSection, DefenseSection, HitDiceSection, HitPointsSection } from './CombatTab';
 import { FeaturesSection } from './FeaturesTab';
 import { CoinsSection, ItemsSection } from './InventoryTab';
 import { AbilitiesSection, ClassesSection, IdentitySection, ProficienciesSection, SkillsSection } from './MainTab';
@@ -37,7 +37,7 @@ export const MOBILE_TABS: TabLayout[] = [
     id: 'combat',
     label: 'Combattimento',
     Icon: Swords,
-    columns: single(HitPointsSection, DefenseSection, ConditionsSection, ClassResourcesSection, RestSection, AttacksSection),
+    columns: single(HitPointsSection, DefenseSection, ConditionsSection, ClassResourcesSection, HitDiceSection, AttacksSection),
   },
   { id: 'spells', label: 'Incantesimi', Icon: WandSparkles, columns: single(CasterSection, SlotsSection, SpellListSection) },
   { id: 'inventory', label: 'Inventario', Icon: Backpack, columns: single(CoinsSection, ItemsSection) },
@@ -54,7 +54,7 @@ export const DESKTOP_TABS: TabLayout[] = [
     columns: [
       { sections: [IdentitySection, ClassesSection, ClassResourcesSection, ProficienciesSection] },
       { sections: [AbilitiesSection, SkillsSection] },
-      { sections: [HitPointsSection, DefenseSection, ConditionsSection, RestSection, AttacksSection] },
+      { sections: [HitPointsSection, DefenseSection, ConditionsSection, HitDiceSection, AttacksSection] },
     ],
   },
   {

@@ -3,6 +3,7 @@ import type { GameSystem } from '../../core/types';
 import { migrate, SCHEMA_VERSION } from './migrate';
 import { createBlank, dnd5eSchema, type Dnd5eCharacter } from './model';
 import { summary } from './rules';
+import { RestActions } from './sheet/RestActions';
 import { Sheet } from './sheet/Sheet';
 
 export const dnd5e: GameSystem<Dnd5eCharacter> = {
@@ -20,4 +21,5 @@ export const dnd5e: GameSystem<Dnd5eCharacter> = {
   withName: (d, name) => ({ ...d, name }),
   summary,
   Sheet,
+  HeaderActions: RestActions,
 };

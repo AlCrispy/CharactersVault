@@ -19,6 +19,8 @@ export interface GameSystem<T> {
   withName(data: T, name: string): T;
   summary(data: T): string;
   Sheet: ComponentType<SheetProps<T>>;
+  /** Azioni rapide nell'header della scheda (es. riposi). */
+  HeaderActions?: ComponentType<SheetProps<T>>;
 }
 
 export interface CharacterRecord {

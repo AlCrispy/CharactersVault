@@ -63,18 +63,19 @@ function LoadedSheet({ id, system, initial }: { id: string; system: GameSystem<u
   const [data, setData] = useState(initial);
   const save = useCallback((d: unknown) => saveCharacterData(id, system, d), [id, system]);
   const status = useAutosave(data, save);
-  const Sheet = system.Sheet;
+  const { Sheet, HeaderActions } = system;
 
   return (
     <div className="sheet-host">
       <header className="sheet-header">
-        <a href="#/" className="btn small">
-          ← Lista
+        <a href="#/" className="btn small" aria-label="Lista">
+          ← <span className="back-label">Lista</span>
         </a>
         <div className="sheet-heading">
           <span className="sheet-title">{system.getName(data) || 'Senza nome'}</span>
           <span className="sheet-subtitle">{system.summary(data)}</span>
         </div>
+        {HeaderActions && <HeaderActions data={data} onChange={setData} />}
         <span className={`save-status ${status}`} role="status">
           {SAVE_LABEL[status]}
         </span>

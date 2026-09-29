@@ -2,13 +2,12 @@ import { useState } from 'react';
 import { Checkbox, NumberInput, Section, Select, Stat } from '../../../ui/fields';
 import { formatNumber, signed } from '../../../ui/format';
 import { Pips } from '../../../ui/Pips';
-import { applyDamage, applyHealing, longRest, setTempHp, shortRest } from '../actions';
+import { applyDamage, applyHealing, setTempHp } from '../actions';
 import { classLevels } from '../classFeatures';
 import { ARMOR_OPTIONS } from '../labels';
 import { HIT_DIE_KEYS, type ArmorType } from '../model';
 import { armorClass, hitDiceTotals, initiative } from '../rules';
 import { fieldSetter } from './listOps';
-import { ShortRestForm } from './ShortRestForm';
 import type { TabProps } from './types';
 
 const ARMOR_WITH_BASE = new Set(['light', 'medium', 'heavy']);
@@ -115,18 +114,14 @@ export function ConditionsSection({ data, onChange }: TabProps) {
   );
 }
 
-export function RestSection({ data, onChange }: TabProps) {
+export function HitDiceSection({ data, onChange }: TabProps) {
   const set = fieldSetter(data, onChange);
-  const [resting, setResting] = useState(false);
   const totals = hitDiceTotals(data);
-
-  function handleLongRest() {
-    if (window.confirm('Riposo lungo: ripristinare PF, slot incantesimo, dadi vita e privilegi?')) onChange(longRest(data));
-  }
-
+  const dice = HIT_DIE_KEYS.filter((k) => totals[k] > 0);
+  if (dice.length === 0) return null;
   return (
-    <Section title="Dadi vita e riposi">
-      {HIT_DIE_KEYS.filter((k) => totals[k] > 0).map((k) => (
+    <Section title="Dadi vita">
+      {dice.map((k) => (
         <div className="row" key={k}>
           <Stat label={`Disponibili ${k}`} ariaLabel={`Dadi vita ${k} disponibili`} value={`${totals[k] - data.hitDiceUsed[k]} / ${totals[k]}`} />
           <NumberInput
@@ -139,24 +134,6 @@ export function RestSection({ data, onChange }: TabProps) {
           />
         </div>
       ))}
-      <div className="row">
-        <button type="button" className="btn" onClick={() => setResting(true)}>
-          Riposo breve
-        </button>
-        <button type="button" className="btn" onClick={handleLongRest}>
-          Riposo lungo
-        </button>
-      </div>
-      {resting && (
-        <ShortRestForm
-          data={data}
-          onCancel={() => setResting(false)}
-          onConfirm={(opts) => {
-            onChange(shortRest(data, opts));
-            setResting(false);
-          }}
-        />
-      )}
     </Section>
   );
 }

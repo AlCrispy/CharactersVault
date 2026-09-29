@@ -33,3 +33,11 @@ it('scheda danneggiata', async () => {
   render(<SheetHost id="bad" />);
   expect(await screen.findByRole('alert')).toHaveTextContent('Impossibile aprire la scheda');
 });
+
+it("mostra i riposi del sistema nell'header", async () => {
+  const rec = await createCharacter(dnd5e, 'Thorin');
+  render(<SheetHost id={rec.id} />);
+  const header = (await screen.findByText('Thorin')).closest('header')!;
+  expect(header).toContainElement(screen.getByRole('button', { name: 'Riposo breve' }));
+  expect(header).toContainElement(screen.getByRole('button', { name: 'Riposo lungo' }));
+});
