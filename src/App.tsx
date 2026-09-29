@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { AppFooter } from './app/AppFooter';
 import { CharacterList } from './app/CharacterList';
 import { useRoute } from './app/route';
 import { SheetHost } from './app/SheetHost';
@@ -12,5 +13,10 @@ export default function App() {
     void requestPersistence().then(setPersisted);
   }, []);
 
-  return route.name === 'sheet' ? <SheetHost key={route.id} id={route.id} /> : <CharacterList persisted={persisted} />;
+  return (
+    <>
+      {route.name === 'sheet' ? <SheetHost key={route.id} id={route.id} /> : <CharacterList persisted={persisted} />}
+      <AppFooter />
+    </>
+  );
 }

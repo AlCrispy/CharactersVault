@@ -9,3 +9,9 @@ it('mostra la lista personaggi e avvisa se lo storage non è persistente', async
   // jsdom non espone navigator.storage.persist → persistenza non garantita.
   expect(await screen.findByRole('alert')).toBeInTheDocument();
 });
+
+it('il footer con la scelta del tema è sempre presente', () => {
+  render(<App />);
+  const footer = screen.getByRole('contentinfo');
+  expect(footer).toContainElement(screen.getByLabelText('Tema'));
+});

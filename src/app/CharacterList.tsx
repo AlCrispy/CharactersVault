@@ -7,7 +7,6 @@ import { registry } from '../core/registry';
 import { createCharacter, deleteCharacter, duplicateCharacter, existingIds, listCharacters, putCharacters } from '../core/repository';
 import { daysSince, getLastBackup, setLastBackup } from '../core/storage';
 import type { CharacterRecord } from '../core/types';
-import { ThemePicker } from '../ui/ThemePicker';
 import { navigate, routeToHash } from './route';
 
 function backupText(last: Date | null): string {
@@ -139,9 +138,6 @@ export function CharacterList({ persisted }: { persisted: boolean | null }) {
         ))}
       </ul>
       {records?.length === 0 && <p className="empty">Nessun personaggio. Creane uno o importa un file.</p>}
-      <footer className="page-footer">
-        <ThemePicker />
-      </footer>
     </main>
   );
 }
