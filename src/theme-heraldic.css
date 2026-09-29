@@ -291,3 +291,135 @@
   :root[data-theme='heraldic'] .sheet[data-layout='desktop'] .tab { font-size: 0.85rem; }
   :root[data-theme='heraldic'] .sheet[data-layout='desktop'] .tab[aria-selected='true']::before { inset: 8px 0; }
 }
+
+/* ——— Abbellimenti: stemmi e tornei ——— */
+
+/* Sfondo su <html> (sotto il fascio di luce fisso): tratteggio obliquo, reticolo a losanghe, alone azzurro. */
+:root[data-theme='heraldic'] {
+  background:
+    repeating-linear-gradient(60deg, rgba(242, 180, 65, 0.022) 0 1px, transparent 1px 30px),
+    repeating-linear-gradient(-60deg, rgba(242, 180, 65, 0.022) 0 1px, transparent 1px 30px),
+    radial-gradient(ellipse 110% 60% at 50% -10%, #1b2a4a 0%, rgba(27, 42, 74, 0) 65%),
+    var(--ink);
+  scrollbar-color: var(--gold-dim) transparent;
+}
+:root[data-theme='heraldic'] body { background: transparent; }
+/* Un fascio di luce attraversa il campo, come il riflesso su un'armatura. */
+:root[data-theme='heraldic'] body::before {
+  content: '';
+  position: fixed;
+  top: -50vh;
+  left: 0;
+  width: 30vw;
+  height: 200vh;
+  z-index: -1;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgba(242, 180, 65, 0.06), transparent);
+  transform: translateX(-60vw) rotate(16deg);
+  animation: field-sweep 16s ease-in-out infinite;
+  will-change: transform;
+}
+@keyframes field-sweep {
+  0%, 55% { transform: translateX(-60vw) rotate(16deg); }
+  100% { transform: translateX(160vw) rotate(16deg); }
+}
+
+/* Capo d'oro: banda in cima a ogni card, dopo l'angolo tagliato. */
+:root[data-theme='heraldic'] .card::after {
+  content: '';
+  position: absolute;
+  top: 1px;
+  left: calc(var(--cut) + 1px);
+  right: 1px;
+  height: 3px;
+  pointer-events: none;
+  background: var(--gold);
+}
+
+/* Titoli di sezione preceduti da uno scudo partito in diagonale oro/azzurro. */
+:root[data-theme='heraldic'] .section-header h2::before {
+  content: '';
+  flex: none;
+  width: 14px;
+  height: 17px;
+  background: linear-gradient(135deg, var(--gold) 50%, #3f6fd8 50%);
+  clip-path: polygon(0 0, 100% 0, 100% 60%, 50% 100%, 0 60%);
+}
+
+/* ——— Caratteristiche: scudi con il capo di smalti diversi ——— */
+
+:root[data-theme='heraldic'] .abilities > .ability:nth-child(1) { --tincture: #e2474b; }
+:root[data-theme='heraldic'] .abilities > .ability:nth-child(2) { --tincture: #38b889; }
+:root[data-theme='heraldic'] .abilities > .ability:nth-child(3) { --tincture: #f2b441; }
+:root[data-theme='heraldic'] .abilities > .ability:nth-child(4) { --tincture: #3f7be0; }
+:root[data-theme='heraldic'] .abilities > .ability:nth-child(5) { --tincture: #9b6bdb; }
+:root[data-theme='heraldic'] .abilities > .ability:nth-child(6) { --tincture: #e7eaf1; }
+:root[data-theme='heraldic'] .ability {
+  padding: 9px 8px 46px;
+  clip-path: polygon(0 0, 100% 0, 100% 68%, 50% 100%, 0 68%);
+}
+:root[data-theme='heraldic'] .ability::before {
+  background: linear-gradient(var(--tincture, var(--gold)) 0 30px, var(--ink-3) 30px);
+  clip-path: polygon(0 0, 100% 0, 100% 68%, 50% 100%, 0 68%);
+}
+:root[data-theme='heraldic'] .ability-name { position: relative; margin-bottom: 8px; color: var(--ink); font-weight: 700; }
+:root[data-theme='heraldic'] .ability:focus-within { background: var(--tincture, var(--gold)); }
+
+/* CA: scaglione inciso sullo scudo d'oro. */
+:root[data-theme='heraldic'] .stat.shield {
+  background:
+    linear-gradient(to bottom right, transparent calc(50% - 5px), rgba(15, 22, 38, 0.16) calc(50% - 5px) calc(50% + 5px), transparent calc(50% + 5px)) right bottom / 50% 60% no-repeat,
+    linear-gradient(to bottom left, transparent calc(50% - 5px), rgba(15, 22, 38, 0.16) calc(50% - 5px) calc(50% + 5px), transparent calc(50% + 5px)) left bottom / 50% 60% no-repeat,
+    var(--gold);
+}
+
+/* Pips e competenze: spuntati girano come una tessera che si ribalta. */
+:root[data-theme='heraldic'] input[type='checkbox']:checked { animation: tile-flip 0.5s var(--ease); }
+:root[data-theme='heraldic'] .prof-toggle[data-level='proficient'] .prof-gem,
+:root[data-theme='heraldic'] .prof-toggle[data-level='expertise'] .prof-gem { animation: tile-flip 0.5s var(--ease); }
+@keyframes tile-flip {
+  0% { transform: skewX(calc(-1 * var(--tilt))) rotateY(180deg) scale(0.6); }
+  100% { transform: skewX(calc(-1 * var(--tilt))) rotateY(0) scale(1); }
+}
+
+/* ——— Lista personaggi: logo su uno scudo inquartato, attraversato da un lampo ——— */
+
+:root[data-theme='heraldic'] .page-header { position: relative; isolation: isolate; padding-top: 38px; }
+:root[data-theme='heraldic'] .page-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  z-index: -1;
+  width: 118px;
+  height: 138px;
+  margin-left: -59px;
+  pointer-events: none;
+  background:
+    linear-gradient(115deg, transparent 40%, rgba(255, 255, 255, 0.45) 50%, transparent 60%) -150% 0 / 250% 100% no-repeat,
+    conic-gradient(from 90deg at 50% 50%, #3f6fd8 0 25%, var(--gold) 0 50%, #3f6fd8 0 75%, var(--gold) 0);
+  clip-path: polygon(0 0, 100% 0, 100% 58%, 50% 100%, 0 58%);
+  animation: shield-glint 7s ease-in-out infinite;
+}
+@keyframes shield-glint {
+  0%, 75% { background-position: -150% 0, 0 0; }
+  100% { background-position: 250% 0, 0 0; }
+}
+:root[data-theme='heraldic'] .logo { position: relative; color: var(--ink); filter: drop-shadow(0 0 1px rgba(231, 234, 241, 0.8)); margin: 4px 0 70px; }
+:root[data-theme='heraldic'] .monogram {
+  padding-top: 8px;
+  background: linear-gradient(var(--blood-bright) 0 24%, var(--gold) 24%);
+  clip-path: polygon(0 0, 100% 0, 100% 60%, 50% 100%, 0 60%);
+}
+
+/* ——— Tab attiva: pennone a coda di rondine ——— */
+
+:root[data-theme='heraldic'] .tab[aria-selected='true']::before {
+  inset: 0 6px 6px;
+  background: linear-gradient(var(--gold) 0 3px, rgba(242, 180, 65, 0.14) 3px);
+  box-shadow: none;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 78%, 0 100%);
+}
+@media (min-width: 1024px) {
+  :root[data-theme='heraldic'] .sheet[data-layout='desktop'] .tab[aria-selected='true']::before { inset: 0 4px 4px; }
+}
