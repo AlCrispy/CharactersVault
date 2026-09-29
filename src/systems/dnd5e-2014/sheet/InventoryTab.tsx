@@ -1,5 +1,6 @@
 import { Checkbox, NumberInput, Section, Stat, TextArea, TextInput } from '../../../ui/fields';
 import { formatNumber } from '../../../ui/format';
+import { RemoveButton } from '../../../ui/RemoveButton';
 import { COIN_LABEL } from '../labels';
 import { COINS, newItem, type Inventory, type Item } from '../model';
 import { carryingCapacityKg, totalWeightKg } from '../rules';
@@ -73,13 +74,11 @@ export function ItemsSection(props: TabProps) {
                     onChange={(v) => patch({ weightKg: v })}
                   />
                   <Checkbox label="Equip." ariaLabel="Equipaggiato" checked={it.equipped} onChange={(v) => patch({ equipped: v })} />
+                  <RemoveButton label="Rimuovi oggetto" onClick={() => setInv({ items: removeById(inv.items, it.id) })} />
                 </div>
                 <details>
                   <summary>Note</summary>
                   <TextArea label="Note oggetto" rows={2} value={it.notes} onChange={(v) => patch({ notes: v })} />
-                  <button type="button" className="btn small danger" onClick={() => setInv({ items: removeById(inv.items, it.id) })}>
-                    Rimuovi oggetto
-                  </button>
                 </details>
               </li>
             );

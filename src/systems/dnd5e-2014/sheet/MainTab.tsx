@@ -1,5 +1,6 @@
 import { Checkbox, NumberInput, Section, Select, Stat, TextArea, TextInput } from '../../../ui/fields';
 import { signed } from '../../../ui/format';
+import { RemoveButton } from '../../../ui/RemoveButton';
 import { CLASS_OPTIONS, CLASSES, type ClassId } from '../classes';
 import { ABILITY_LABEL, SKILL_LABEL } from '../labels';
 import { ABILITIES, newClass, SKILL_ABILITY, SKILLS, type ClassEntry } from '../model';
@@ -57,14 +58,7 @@ export function ClassesSection({ data, onChange }: TabProps) {
             <TextInput label="Sottoclasse" value={k.subclass} onChange={(v) => patch({ subclass: v })} />
             <NumberInput label="Livello" className="narrow" value={k.level} min={1} max={20} onChange={(v) => patch({ level: v })} />
             <Stat label="Dado vita" value={info ? `d${info.hitDie}` : '—'} />
-            <button
-              type="button"
-              className="btn small danger"
-              aria-label={`Rimuovi classe ${info?.label ?? ''}`.trim()}
-              onClick={() => setClasses(removeById(data.classes, k.id))}
-            >
-              ✕
-            </button>
+            <RemoveButton label={`Rimuovi classe ${info?.label ?? ''}`.trim()} onClick={() => setClasses(removeById(data.classes, k.id))} />
           </div>
         );
       })}

@@ -390,7 +390,7 @@ input[type='checkbox']:focus-visible, button:focus-visible, a:focus-visible {
   overflow: hidden;
   background: #140c09;
   border: 1px solid var(--gold-dim);
-  border-radius: 999px;
+  border-radius: 2px;
   box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.7);
 }
 /* Colore secondo lo stato di salute (HpBar.tsx): sopra il 50%, fino al 25%, sotto. */
@@ -804,3 +804,12 @@ fieldset.sheet-panels { min-width: 0; border: 0; }
 }
 .sheet[data-locked] input[type='checkbox']:disabled { cursor: default; }
 .sheet[data-locked] .prof-toggle:disabled { cursor: default; }
+
+/* ——— Tasto cestino per rimuovere voci dalle liste: neutro, accanto al nome ——— */
+
+.btn.remove-btn { flex: none; padding-inline: 10px; }
+.list-summary .remove-btn { margin-left: auto; align-self: center; }
+.list-item .row { align-items: flex-end; }
+
+/* Dadi vita: disponibili accanto alle caselle. */
+.hit-dice-left { margin-left: auto; font-weight: 700; color: var(--gold-bright); }

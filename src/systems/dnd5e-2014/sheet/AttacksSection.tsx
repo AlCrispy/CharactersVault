@@ -1,5 +1,6 @@
 import { Checkbox, NumberInput, Section, Select, TextArea, TextInput } from '../../../ui/fields';
 import { signed } from '../../../ui/format';
+import { RemoveButton } from '../../../ui/RemoveButton';
 import { ABILITY_OPTIONS } from '../labels';
 import { newAttack, type Attack } from '../model';
 import { attackDamage, attackToHit } from '../rules';
@@ -30,6 +31,7 @@ export function AttacksSection({ data, onChange }: TabProps) {
                 <span aria-label={`Danno ${a.name}`}>
                   {attackDamage(data, a)} {a.damageType}
                 </span>
+                <RemoveButton label="Rimuovi attacco" onClick={() => setAttacks(removeById(data.attacks, a.id))} />
               </div>
               <details>
                 <summary>Modifica</summary>
@@ -44,9 +46,6 @@ export function AttacksSection({ data, onChange }: TabProps) {
                   <TextInput label="Tipo di danno" value={a.damageType} onChange={(v) => patch({ damageType: v })} />
                 </div>
                 <TextArea label="Note attacco" rows={2} value={a.notes} onChange={(v) => patch({ notes: v })} />
-                <button type="button" className="btn small danger" onClick={() => setAttacks(removeById(data.attacks, a.id))}>
-                  Rimuovi attacco
-                </button>
               </details>
             </li>
           );

@@ -1,5 +1,6 @@
 import { Checkbox, NumberInput, Section, Select, TextArea, TextInput } from '../../../ui/fields';
 import { Pips } from '../../../ui/Pips';
+import { RemoveButton } from '../../../ui/RemoveButton';
 import { RECHARGE_LABEL, RECHARGE_OPTIONS } from '../labels';
 import { newFeature, type Feature } from '../model';
 import { removeById, updateById } from './listOps';
@@ -27,6 +28,7 @@ export function FeaturesSection({ data, onChange }: TabProps) {
               <div className="row">
                 <TextInput label="Nome privilegio" value={f.name} onChange={(v) => patch({ name: v })} />
                 <TextInput label="Fonte" placeholder="Classe, razza, talento…" value={f.source} onChange={(v) => patch({ source: v })} />
+                <RemoveButton label="Rimuovi privilegio" onClick={() => setFeatures(removeById(data.features, f.id))} />
               </div>
               {uses && (
                 <div className="row">
@@ -54,9 +56,6 @@ export function FeaturesSection({ data, onChange }: TabProps) {
                     <Select label="Ripristino" value={uses.recharge} options={RECHARGE_OPTIONS} onChange={(v) => patch({ uses: { ...uses, recharge: v } })} />
                   </div>
                 )}
-                <button type="button" className="btn small danger" onClick={() => setFeatures(removeById(data.features, f.id))}>
-                  Rimuovi privilegio
-                </button>
               </details>
             </li>
           );

@@ -40,6 +40,18 @@ describe('tab Combattimento', () => {
     expect(data().hp.current).toBe(20);
   });
 
+  it('i dadi vita si spendono e recuperano con un click', async () => {
+    const user = userEvent.setup();
+    const { data } = renderSheet(wounded());
+    const dice = within(panel().getByRole('group', { name: 'Dadi vita d8 usati' })).getAllByRole('checkbox');
+    expect(dice).toHaveLength(3);
+    await user.click(dice[0]);
+    expect(data().hitDiceUsed.d8).toBe(1);
+    expect(panel().getByLabelText('Dadi vita d8 disponibili')).toHaveTextContent('2 / 3');
+    await user.click(dice[0]);
+    expect(data().hitDiceUsed.d8).toBe(0);
+  });
+
   it('dadi vita nascosti senza classe', () => {
     renderSheet();
     expect(panel().queryByRole('heading', { name: 'Dadi vita' })).toBeNull();

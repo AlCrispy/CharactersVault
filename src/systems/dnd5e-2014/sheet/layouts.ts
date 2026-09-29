@@ -46,7 +46,7 @@ export const MOBILE_TABS: TabLayout[] = [
   { id: 'notes', label: 'Note', Icon: Feather, columns: single(PersonalitySection, NotesSection) },
 ];
 
-/** Desktop: 4 tab, card correlate affiancate su 3 colonne. */
+/** Desktop: 5 tab, card correlate affiancate su 3 colonne. */
 export const DESKTOP_TABS: TabLayout[] = [
   {
     id: 'hero',
@@ -61,10 +61,16 @@ export const DESKTOP_TABS: TabLayout[] = [
   // Una sola card a tutta larghezza: ogni classe sta su una riga.
   { id: 'classes', label: 'Classi', Icon: GraduationCap, columns: [{ sections: [ClassesSection], span: 3 }] },
   {
-    id: 'gear',
-    label: 'Magia ed equipaggiamento',
+    id: 'magic',
+    label: 'Magia',
     Icon: WandSparkles,
-    columns: [{ sections: [CasterSection, SlotsSection] }, { sections: [SpellListSection] }, { sections: [CoinsSection, ItemsSection] }],
+    columns: [{ sections: [CasterSection, SlotsSection] }, { sections: [SpellListSection], span: 2 }],
+  },
+  {
+    id: 'gear',
+    label: 'Equipaggiamento',
+    Icon: Backpack,
+    columns: [{ sections: [CoinsSection] }, { sections: [ItemsSection], span: 2 }],
   },
   {
     id: 'story',

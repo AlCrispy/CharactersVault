@@ -6,12 +6,12 @@ interface PipsProps {
   max: number;
   onChange: (count: number) => void;
   hideLabel?: boolean;
+  /** Oltre questo numero di caselle si mostra un campo numerico (default 10). */
+  maxPips?: number;
 }
 
-const MAX_PIPS = 10;
-
-export function Pips({ label, count, max, onChange, hideLabel }: PipsProps) {
-  if (max > MAX_PIPS) {
+export function Pips({ label, count, max, onChange, hideLabel, maxPips = 10 }: PipsProps) {
+  if (max > maxPips) {
     return <NumberInput label={label} value={count} min={0} max={max} onChange={onChange} hideLabel={hideLabel} />;
   }
   return (

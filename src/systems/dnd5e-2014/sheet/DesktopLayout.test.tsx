@@ -21,13 +21,14 @@ function headings(panel: string) {
 }
 
 describe('layout desktop', () => {
-  it('raggruppa le card in 4 tab', async () => {
+  it('raggruppa le card in 5 tab', async () => {
     const user = userEvent.setup();
     renderSheet();
     expect(screen.getAllByRole('tab').map((t) => t.getAttribute('aria-label'))).toEqual([
       'Eroe',
       'Classi',
-      'Magia ed equipaggiamento',
+      'Magia',
+      'Equipaggiamento',
       'Privilegi e storia',
     ]);
     expect(headings('Eroe')).toEqual([
@@ -41,7 +42,8 @@ describe('layout desktop', () => {
       'Attacchi',
     ]);
     expect(headings('Classi')).toEqual(['Classi']);
-    expect(headings('Magia ed equipaggiamento')).toEqual(['Incantatore', 'Incantesimi', 'Monete', 'Oggetti']);
+    expect(headings('Magia')).toEqual(['Incantatore', 'Incantesimi']);
+    expect(headings('Equipaggiamento')).toEqual(['Monete', 'Oggetti']);
     expect(headings('Privilegi e storia')).toEqual(['Privilegi e tratti', 'Personalità', 'Note']);
 
     await user.click(screen.getByRole('tab', { name: 'Privilegi e storia' }));

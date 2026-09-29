@@ -1,6 +1,7 @@
 import { Checkbox, NumberInput, Section, Select, Stat, TextArea, TextInput } from '../../../ui/fields';
 import { signed } from '../../../ui/format';
 import { Pips } from '../../../ui/Pips';
+import { RemoveButton } from '../../../ui/RemoveButton';
 import { ABILITY_OPTIONS } from '../labels';
 import { newSpell, type Ability, type Spell, type Spellcasting } from '../model';
 import { pactSlots, spellAttackBonus, spellSaveDC, spellSlots } from '../rules';
@@ -105,13 +106,11 @@ export function SpellListSection(props: TabProps) {
                   <NumberInput label="Livello incantesimo" className="narrow" value={s.level} min={0} max={9} onChange={(v) => patch({ level: v })} />
                   <TextInput label="Nome incantesimo" value={s.name} onChange={(v) => patch({ name: v })} />
                   {s.level > 0 && <Checkbox label="Preparato" checked={s.prepared} onChange={(v) => patch({ prepared: v })} />}
+                  <RemoveButton label="Rimuovi incantesimo" onClick={() => setSc({ spells: removeById(sc.spells, s.id) })} />
                 </div>
                 <details>
                   <summary>Note</summary>
                   <TextArea label="Note incantesimo" rows={3} value={s.notes} onChange={(v) => patch({ notes: v })} />
-                  <button type="button" className="btn small danger" onClick={() => setSc({ spells: removeById(sc.spells, s.id) })}>
-                    Rimuovi incantesimo
-                  </button>
                 </details>
               </li>
             );

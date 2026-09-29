@@ -109,6 +109,7 @@ export function ConditionsSection({ data, onChange }: TabProps) {
   );
 }
 
+/** Un dado vita = una casella: click per spenderlo, riclick per recuperarlo. */
 export function HitDiceSection({ data, onChange }: TabProps) {
   const set = fieldSetter(data, onChange);
   const totals = hitDiceTotals(data);
@@ -116,19 +117,27 @@ export function HitDiceSection({ data, onChange }: TabProps) {
   if (dice.length === 0) return null;
   return (
     <Section title="Dadi vita">
-      {dice.map((k) => (
-        <div className="row" key={k}>
-          <Stat label={`Disponibili ${k}`} ariaLabel={`Dadi vita ${k} disponibili`} value={`${totals[k] - data.hitDiceUsed[k]} / ${totals[k]}`} />
-          <NumberInput
-            label={`Usati ${k}`}
-            className="narrow"
-            value={data.hitDiceUsed[k]}
-            min={0}
-            max={totals[k]}
-            onChange={(v) => set('hitDiceUsed', { ...data.hitDiceUsed, [k]: v })}
-          />
-        </div>
-      ))}
+      <ul className="slots">
+        {dice.map((k) => {
+          const used = Math.min(data.hitDiceUsed[k], totals[k]);
+          return (
+            <li className="slot-row" key={k}>
+              <span className="slot-level">{k}</span>
+              <Pips
+                hideLabel
+                label={`Dadi vita ${k} usati`}
+                count={used}
+                max={totals[k]}
+                maxPips={20}
+                onChange={(v) => set('hitDiceUsed', { ...data.hitDiceUsed, [k]: v })}
+              />
+              <output className="hit-dice-left" aria-label={`Dadi vita ${k} disponibili`}>
+                {totals[k] - used} / {totals[k]}
+              </output>
+            </li>
+          );
+        })}
+      </ul>
     </Section>
   );
 }
