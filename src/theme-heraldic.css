@@ -234,7 +234,8 @@
   box-shadow: none;
   clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
 }
-:root[data-theme='heraldic'] .hp-fill { background: var(--blood-bright); box-shadow: none; }
+:root[data-theme='heraldic'] { --hp-good: #38b889; --hp-mid: #f2b441; --hp-bad: #e2474b; }
+:root[data-theme='heraldic'] .hp-fill { background-image: none; box-shadow: none; }
 :root[data-theme='heraldic'] .hp-temp { background: repeating-linear-gradient(106deg, var(--parch-muted) 0 3px, transparent 3px 6px); }
 
 /* ——— Liste ——— */

@@ -126,13 +126,17 @@
   100% { transform: translateX(120%); }
 }
 
-/* ——— Punti ferita: sangue che scorre piano ——— */
+/* ——— Punti ferita: un riflesso scorre piano sul colore dello stato di salute ——— */
 
 :root[data-theme='grimoire'] .hp-fill {
-  background: linear-gradient(90deg, #5e1a13, var(--blood) 25%, var(--blood-bright) 50%, var(--blood) 75%, #5e1a13) 0 0 / 200% 100%;
-  animation: blood-flow 7s linear infinite;
+  background-image:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0) 70%),
+    linear-gradient(90deg, transparent 40%, rgba(255, 236, 210, 0.2) 50%, transparent 60%);
+  background-size: 100% 100%, 200% 100%;
+  animation: hp-flow 7s linear infinite;
 }
-@keyframes blood-flow { to { background-position: 200% 0; } }
+:root[data-theme='grimoire'] .hp-bar[data-state='bad'] .hp-fill { animation: hp-flow 7s linear infinite, hp-pulse 1.1s ease-in-out infinite alternate; }
+@keyframes hp-flow { to { background-position: 0 0, -200% 0; } }
 
 :root[data-theme='grimoire'] .skill { transition: background 0.25s var(--ease); }
 @media (hover: hover) {

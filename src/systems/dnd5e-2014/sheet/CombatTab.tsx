@@ -7,6 +7,7 @@ import { classLevels } from '../classFeatures';
 import { ARMOR_OPTIONS } from '../labels';
 import { HIT_DIE_KEYS, type ArmorType } from '../model';
 import { armorClass, hitDiceTotals, initiative } from '../rules';
+import { HpBar } from './HpBar';
 import { fieldSetter } from './listOps';
 import type { TabProps } from './types';
 
@@ -15,9 +16,6 @@ const ARMOR_WITH_BASE = new Set(['light', 'medium', 'heavy']);
 export function HitPointsSection({ data, onChange }: TabProps) {
   const set = fieldSetter(data, onChange);
   const [amount, setAmount] = useState(0);
-  const { current, max, temp } = data.hp;
-  const hpPct = max > 0 ? Math.min(1, current / max) : 0;
-  const tempPct = max > 0 ? Math.min(1 - hpPct, temp / max) : 0;
 
   return (
     <Section title="Punti ferita">
@@ -25,10 +23,7 @@ export function HitPointsSection({ data, onChange }: TabProps) {
         <Stat label="PF attuali" value={`${data.hp.current} / ${data.hp.max}`} />
         <Stat label="PF temporanei" value={data.hp.temp} />
       </div>
-      <div className="hp-bar" aria-hidden="true">
-        <div className="hp-fill" style={{ width: `${hpPct * 100}%` }} />
-        <div className="hp-temp" style={{ width: `${tempPct * 100}%` }} />
-      </div>
+      <HpBar current={data.hp.current} max={data.hp.max} temp={data.hp.temp} />
       <div className="row">
         <NumberInput label="Quantità" value={amount} min={0} max={999} onChange={setAmount} />
         <button
