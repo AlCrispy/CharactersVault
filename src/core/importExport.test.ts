@@ -59,6 +59,11 @@ describe('import', () => {
     expect(parseImportFile(text, reg)).toEqual({ records: [rec()], issues: [] });
   });
 
+  it('conserva il lucchetto', () => {
+    const text = serializeExport(buildExportFile([rec({ locked: true })], now));
+    expect(parseImportFile(text, reg).records[0].locked).toBe(true);
+  });
+
   it('JSON non valido', () => {
     expect(() => parseImportFile('{non json', reg)).toThrow(ImportError);
   });

@@ -6,7 +6,7 @@ import { DESKTOP_TABS, MOBILE_TABS } from './layouts';
 
 export const DESKTOP_QUERY = '(min-width: 1024px)';
 
-export function Sheet({ data, onChange }: SheetProps<Dnd5eCharacter>) {
+export function Sheet({ data, onChange, readOnly = false }: SheetProps<Dnd5eCharacter>) {
   const desktop = useMediaQuery(DESKTOP_QUERY);
   const tabs = desktop ? DESKTOP_TABS : MOBILE_TABS;
   const [activeId, setActiveId] = useState(tabs[0].id);
@@ -33,9 +33,10 @@ export function Sheet({ data, onChange }: SheetProps<Dnd5eCharacter>) {
   );
 
   return (
-    <div className="sheet" data-layout={desktop ? 'desktop' : 'mobile'}>
+    <div className="sheet" data-layout={desktop ? 'desktop' : 'mobile'} data-locked={readOnly || undefined}>
       {desktop && tabbar}
-      <div className="sheet-panels">
+      {/* Un fieldset disabilitato blocca in un colpo solo tutti i campi e i tasti dei pannelli (non le tab). */}
+      <fieldset className="sheet-panels" disabled={readOnly}>
         {tabs.map(({ id, label, columns }) => (
           <div key={id} className="panel" role="tabpanel" aria-label={label} data-active={active.id === id}>
             {columns.map((col, i) => (
@@ -47,7 +48,7 @@ export function Sheet({ data, onChange }: SheetProps<Dnd5eCharacter>) {
             ))}
           </div>
         ))}
-      </div>
+      </fieldset>
       {!desktop && tabbar}
     </div>
   );

@@ -719,6 +719,8 @@ a.character-name:hover { color: var(--gold-bright); }
 /* ——— Azioni nell'header e finestre modali ——— */
 
 .header-actions { display: flex; gap: 8px; }
+/* Tasti dell'header solo icona (nome e tooltip restano per accessibilità). */
+.header-actions .btn { padding: 4px 10px; }
 
 .modal-backdrop {
   position: fixed;
@@ -733,11 +735,6 @@ a.character-name:hover { color: var(--gold-bright); }
 .modal { width: min(480px, 100%); max-height: calc(100dvh - 32px); overflow-y: auto; background: linear-gradient(180deg, var(--ink-3), var(--ink-2)); }
 .modal h2 { margin-top: 0; }
 
-/* Tasti dei riposi solo icone finché lo spazio non basta anche per il nome del personaggio. */
-@media (max-width: 1023px) {
-  .header-actions .btn span { display: none; }
-  .header-actions .btn { padding: 4px 10px; }
-}
 @media (max-width: 520px) {
   .back-label { display: none; }
 }
@@ -787,3 +784,23 @@ a.character-name:hover { color: var(--gold-bright); }
 
 .confirm-message { margin: 14px 0 20px; white-space: pre-line; }
 .confirm-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px; }
+
+/* ——— Lucchetto della scheda ——— */
+
+.sheet-state { align-items: center; }
+/* Chiuso: tasto evidenziato nel colore d'accento del tema (:root per vincere sui .btn dei temi). */
+:root .btn.lock-toggle[aria-pressed='true'] { color: var(--ink); background: var(--gold); border-color: var(--gold); }
+:root .btn.lock-toggle[aria-pressed='true']:hover { color: var(--ink); background: var(--gold-bright); }
+.locked-mark { margin-left: 8px; vertical-align: -1px; color: var(--gold); }
+
+/* I pannelli stanno in un fieldset (disabilitato quando la scheda è bloccata): niente stile da modulo. */
+fieldset.sheet-panels { min-width: 0; border: 0; }
+/* Da bloccata i campi restano leggibili come testo, non grigi. */
+.sheet[data-locked] :is(input, select, textarea):disabled {
+  opacity: 1;
+  color: var(--parch);
+  -webkit-text-fill-color: var(--parch);
+  cursor: default;
+}
+.sheet[data-locked] input[type='checkbox']:disabled { cursor: default; }
+.sheet[data-locked] .prof-toggle:disabled { cursor: default; }

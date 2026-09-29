@@ -37,6 +37,12 @@ export async function saveCharacterData<T>(id: string, system: GameSystem<T>, da
   if (updated === 0) throw new Error(`Personaggio non trovato: ${id}`);
 }
 
+/** Blocca o sblocca la scheda. Non è una modifica del personaggio: `updatedAt` resta invariato. */
+export async function setCharacterLocked(id: string, locked: boolean): Promise<void> {
+  const updated = await db.characters.update(id, { locked });
+  if (updated === 0) throw new Error(`Personaggio non trovato: ${id}`);
+}
+
 export async function deleteCharacter(id: string): Promise<void> {
   await db.characters.delete(id);
 }
@@ -51,7 +57,8 @@ export async function duplicateCharacter(id: string, now = new Date()): Promise<
     loaded.status === 'ok'
       ? { ...source, data: loaded.system.withName(loaded.data, name), schemaVersion: loaded.system.schemaVersion }
       : { ...source, data: JSON.parse(JSON.stringify(source.data)) };
-  Object.assign(copy, { id: newId(), name, createdAt: ts, updatedAt: ts });
+  // La copia nasce sbloccata: è una nuova scheda da modificare.
+  Object.assign(copy, { id: newId(), name, createdAt: ts, updatedAt: ts, locked: false });
   await db.characters.add(copy);
   return copy;
 }

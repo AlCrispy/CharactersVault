@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, expect, it } from 'vitest';
 import { db } from '../core/db';
@@ -40,4 +40,27 @@ it("mostra i riposi del sistema nell'header", async () => {
   const header = (await screen.findByText('Thorin')).closest('header')!;
   expect(header).toContainElement(screen.getByRole('button', { name: 'Riposo breve' }));
   expect(header).toContainElement(screen.getByRole('button', { name: 'Riposo lungo' }));
+});
+
+it('il lucchetto blocca la scheda, resta salvato e si può riaprire', async () => {
+  const user = userEvent.setup();
+  const rec = await createCharacter(dnd5e, 'Thorin');
+  const { unmount } = render(<SheetHost id={rec.id} />);
+  const name = await screen.findByLabelText('Nome personaggio');
+  await user.click(screen.getByRole('button', { name: 'Blocca scheda' }));
+  expect(screen.getByRole('button', { name: 'Sblocca scheda' })).toHaveAttribute('aria-pressed', 'true');
+  expect(name).toBeDisabled();
+  expect(screen.getByRole('button', { name: 'Riposo lungo' })).toBeDisabled();
+  // Lo stato del salvataggio serve solo mentre si modifica.
+  expect(document.querySelector('.save-status')).toBeNull();
+  // Le tab restano utilizzabili per consultare la scheda.
+  expect(screen.getAllByRole('tab')[0]).toBeEnabled();
+  await waitFor(async () => expect((await getCharacter(rec.id))?.locked).toBe(true));
+
+  unmount();
+  render(<SheetHost id={rec.id} />);
+  expect(await screen.findByLabelText('Nome personaggio')).toBeDisabled();
+  await user.click(screen.getByRole('button', { name: 'Sblocca scheda' }));
+  expect(screen.getByLabelText('Nome personaggio')).toBeEnabled();
+  await waitFor(async () => expect((await getCharacter(rec.id))?.locked).toBe(false));
 });

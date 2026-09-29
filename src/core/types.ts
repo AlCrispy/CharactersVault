@@ -3,6 +3,8 @@ import type { ComponentType } from 'react';
 export interface SheetProps<T> {
   data: T;
   onChange: (next: T) => void;
+  /** Scheda bloccata: niente modifiche, solo consultazione. */
+  readOnly?: boolean;
 }
 
 /** Contratto che ogni modulo di sistema di gioco implementa. */
@@ -31,4 +33,6 @@ export interface CharacterRecord {
   createdAt: string;
   updatedAt: string;
   data: unknown;
+  /** Bloccata col lucchetto: la scheda non si può modificare finché non viene sbloccata. */
+  locked?: boolean;
 }

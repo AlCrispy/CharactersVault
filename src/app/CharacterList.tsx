@@ -1,4 +1,5 @@
 import { useLiveQuery } from 'dexie-react-hooks';
+import { Lock } from 'lucide-react';
 import { useRef, useState, type ChangeEvent, type FormEvent } from 'react';
 import { readFileText, shareOrDownload } from '../core/fileShare';
 import { asCopy, buildExportFile, exportFileName, ImportError, parseImportFile, serializeExport, splitConflicts } from '../core/importExport';
@@ -179,6 +180,7 @@ function CharacterRow({ record, onExport, onDuplicate, onDelete }: RowProps) {
         {loaded.status === 'ok' ? (
           <a className="character-name" href={routeToHash({ name: 'sheet', id: record.id })}>
             {name}
+            {record.locked && <Lock className="locked-mark" size={15} strokeWidth={2} aria-label="bloccata" />}
           </a>
         ) : (
           <span className="character-name">{name}</span>

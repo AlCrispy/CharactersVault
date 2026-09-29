@@ -10,6 +10,7 @@ import {
   listCharacters,
   putCharacters,
   saveCharacterData,
+  setCharacterLocked,
 } from './repository';
 import { testSystem } from './testSystem';
 import type { CharacterRecord } from './types';
@@ -84,5 +85,20 @@ describe('repository', () => {
     const b = await createCharacter(testSystem, 'B');
     await deleteCharacter(a.id);
     expect(await existingIds()).toEqual(new Set([b.id]));
+  });
+
+  it('blocca e sblocca senza toccare la data di modifica', async () => {
+    const r = await createCharacter(testSystem, 'Ada', t('1'));
+    await setCharacterLocked(r.id, true);
+    expect(await getCharacter(r.id)).toMatchObject({ locked: true, updatedAt: r.updatedAt });
+    await setCharacterLocked(r.id, false);
+    expect((await getCharacter(r.id))?.locked).toBe(false);
+  });
+
+  it('la copia di una scheda bloccata nasce sbloccata', async () => {
+    const r = await createCharacter(testSystem, 'Ada', t('1'));
+    await setCharacterLocked(r.id, true);
+    const copy = await duplicateCharacter(r.id, t('2'));
+    expect(copy.locked).toBe(false);
   });
 });

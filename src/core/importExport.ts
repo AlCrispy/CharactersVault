@@ -41,6 +41,7 @@ const recordSchema = z.object({
   createdAt: z.string(),
   updatedAt: z.string(),
   data: z.unknown(),
+  locked: z.boolean().optional(),
 });
 
 export function buildExportFile(records: CharacterRecord[], now = new Date()): ExportFile {
