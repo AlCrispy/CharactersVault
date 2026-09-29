@@ -4,6 +4,8 @@ Schede per giochi di ruolo. Funziona offline su telefono e PC, senza server: i d
 
 Sistema supportato: **D&D 5e (2014)**.
 
+**App online:** https://alcrispy.github.io/CharactersVault/
+
 ## Sviluppo
 
 ```bash
