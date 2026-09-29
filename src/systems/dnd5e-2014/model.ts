@@ -78,6 +78,8 @@ const spellSchema = z.object({
   name: z.string(),
   level: int(0, 9),
   prepared: z.boolean(),
+  /** Lanciabile come rituale (alcune classi, es. il mago, possono farlo anche senza averlo preparato). Assente nei dati vecchi. */
+  ritual: z.boolean().default(false),
   notes: z.string(),
 });
 
@@ -178,7 +180,7 @@ export function newAttack(): Attack {
 }
 
 export function newSpell(): Spell {
-  return { id: newId(), name: '', level: 0, prepared: false, notes: '' };
+  return { id: newId(), name: '', level: 0, prepared: false, ritual: false, notes: '' };
 }
 
 export function newFeature(): Feature {

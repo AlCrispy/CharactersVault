@@ -61,7 +61,11 @@ describe('tab Incantesimi', () => {
     await user.clear(level);
     await user.type(level, '1');
     await user.click(panel().getByLabelText('Preparato'));
-    expect(data().spellcasting.spells[0]).toMatchObject({ name: 'Dardo incantato', level: 1, prepared: true });
+    expect(data().spellcasting.spells[0]).toMatchObject({ name: 'Dardo incantato', level: 1, prepared: true, ritual: false });
+    expect(panel().queryByLabelText('Rituale', { selector: 'span' })).toBeNull();
+    await user.click(panel().getByRole('checkbox', { name: 'Rituale' }));
+    expect(data().spellcasting.spells[0].ritual).toBe(true);
+    expect(panel().getByLabelText('Rituale', { selector: 'span' })).toHaveTextContent('R');
     await user.click(panel().getByRole('button', { name: 'Rimuovi incantesimo' }));
     expect(data().spellcasting.spells).toHaveLength(0);
   });

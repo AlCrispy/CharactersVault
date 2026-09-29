@@ -24,6 +24,13 @@ describe('modello D&D 5e', () => {
     expect(() => dnd5eSchema.parse(c)).not.toThrow();
   });
 
+  it('gli incantesimi salvati senza "rituale" valgono come non rituali', () => {
+    const c = createBlank();
+    const { ritual: _ritual, ...old } = newSpell();
+    const parsed = dnd5eSchema.parse({ ...c, spellcasting: { ...c.spellcasting, spells: [old] } });
+    expect(parsed.spellcasting.spells[0].ritual).toBe(false);
+  });
+
   it('rifiuta punteggi fuori intervallo', () => {
     const c = createBlank();
     c.abilities.str = 31;

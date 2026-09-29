@@ -813,3 +813,20 @@ fieldset.sheet-panels { min-width: 0; border: 0; }
 
 /* Dadi vita: disponibili accanto alle caselle. */
 .hit-dice-left { margin-left: auto; font-weight: 700; color: var(--gold-bright); }
+
+/* Incantesimo rituale: sigla accanto al livello. */
+.ritual-mark {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  margin-bottom: 8px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--ink);
+  background: var(--gold);
+  border-radius: var(--radius);
+  box-shadow: 0 0 10px var(--gold-faint);
+}

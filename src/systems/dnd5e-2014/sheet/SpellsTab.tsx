@@ -104,8 +104,15 @@ export function SpellListSection(props: TabProps) {
               <li key={s.id} className="list-item">
                 <div className="row">
                   <NumberInput label="Livello incantesimo" className="narrow" value={s.level} min={0} max={9} onChange={(v) => patch({ level: v })} />
+                  {s.level > 0 && s.ritual && (
+                    <span className="ritual-mark" title="Rituale" aria-label="Rituale">
+                      R
+                    </span>
+                  )}
                   <TextInput label="Nome incantesimo" value={s.name} onChange={(v) => patch({ name: v })} />
                   {s.level > 0 && <Checkbox label="Preparato" checked={s.prepared} onChange={(v) => patch({ prepared: v })} />}
+                  {/* I trucchetti non possono essere rituali. */}
+                  {s.level > 0 && <Checkbox label="Rituale" checked={s.ritual} onChange={(v) => patch({ ritual: v })} />}
                   <RemoveButton label="Rimuovi incantesimo" onClick={() => setSc({ spells: removeById(sc.spells, s.id) })} />
                 </div>
                 <details>
