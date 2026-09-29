@@ -207,3 +207,36 @@
 @media (min-width: 1024px) {
   :root[data-theme='grimoire'] .sheet[data-layout='desktop'] .tab[aria-selected='true']::after { top: auto; bottom: -4px; }
 }
+
+/* ——— Astrolabio alchemico dietro le card ———
+ * Due livelli fissi al centro dello schermo, animati solo con transform:
+ * l'anello graduato con le 12 case e i simboli degli elementi gira in un senso,
+ * il disco con l'eptagramma e il sole nell'altro. */
+:root[data-theme='grimoire'] #root::before,
+:root[data-theme='grimoire'] #root::after {
+  content: '';
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 880px;
+  height: 880px;
+  margin: -440px 0 0 -440px;
+  z-index: -1;
+  pointer-events: none;
+  background: center / contain no-repeat;
+  will-change: transform;
+}
+:root[data-theme='grimoire'] #root::before {
+  background-image: url('./assets/grimoire/astrolabe.svg');
+  opacity: 0.09;
+  animation: ward-spin 260s linear infinite;
+}
+:root[data-theme='grimoire'] #root::after {
+  background-image: url('./assets/grimoire/heptagram.svg');
+  opacity: 0.08;
+  animation: ward-spin 180s linear infinite reverse;
+}
+@media (max-width: 700px) {
+  :root[data-theme='grimoire'] #root::before,
+  :root[data-theme='grimoire'] #root::after { width: 640px; height: 640px; margin: -320px 0 0 -320px; }
+}
