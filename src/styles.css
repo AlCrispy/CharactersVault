@@ -714,3 +714,19 @@ a.character-name:hover { color: var(--gold-bright); }
   .sheet-panels { padding-bottom: 24px; }
   .sheet-host ~ .app-footer { padding-bottom: calc(var(--tabbar-h) + 14px + env(safe-area-inset-bottom)); }
 }
+
+/* ——— Classi: ogni classe su una riga (su telefono: classe, sottoclasse, poi livello · dado vita · ✕) ——— */
+
+.class-row {
+  display: grid;
+  grid-template-columns: minmax(150px, 1fr) minmax(160px, 1.6fr) 90px minmax(88px, auto) auto;
+  gap: 10px;
+  align-items: end;
+  margin-bottom: 12px;
+}
+.class-row .field.narrow { flex: none; }
+@media (max-width: 600px) {
+  .class-row { grid-template-columns: 90px auto 1fr; }
+  .class-row > :nth-child(-n + 2) { grid-column: 1 / -1; }
+  .class-row > :last-child { justify-self: end; }
+}

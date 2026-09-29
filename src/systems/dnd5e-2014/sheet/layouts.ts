@@ -1,4 +1,4 @@
-import { Backpack, Crown, Feather, ScrollText, Shield, Swords, WandSparkles, type LucideIcon } from 'lucide-react';
+import { Backpack, Crown, Feather, GraduationCap, ScrollText, Shield, Swords, WandSparkles, type LucideIcon } from 'lucide-react';
 import type { ComponentType } from 'react';
 import { AttacksSection } from './AttacksSection';
 import { ClassResourcesSection } from './ClassResourcesSection';
@@ -25,14 +25,15 @@ export interface TabLayout {
 
 const single = (...sections: ComponentType<TabProps>[]): Column[] => [{ sections }];
 
-/** Telefono: 6 tab, una colonna ciascuno. */
+/** Telefono: 7 tab, una colonna ciascuno. */
 export const MOBILE_TABS: TabLayout[] = [
   {
     id: 'main',
     label: 'Principale',
     Icon: ScrollText,
-    columns: single(IdentitySection, ClassesSection, AbilitiesSection, SkillsSection, ProficienciesSection),
+    columns: single(IdentitySection, AbilitiesSection, SkillsSection, ProficienciesSection),
   },
+  { id: 'classes', label: 'Classi', Icon: GraduationCap, columns: single(ClassesSection) },
   {
     id: 'combat',
     label: 'Combattimento',
@@ -45,18 +46,20 @@ export const MOBILE_TABS: TabLayout[] = [
   { id: 'notes', label: 'Note', Icon: Feather, columns: single(PersonalitySection, NotesSection) },
 ];
 
-/** Desktop: 3 tab, card correlate affiancate su 3 colonne. */
+/** Desktop: 4 tab, card correlate affiancate su 3 colonne. */
 export const DESKTOP_TABS: TabLayout[] = [
   {
     id: 'hero',
     label: 'Eroe',
     Icon: Shield,
     columns: [
-      { sections: [IdentitySection, ClassesSection, ClassResourcesSection, ProficienciesSection] },
+      { sections: [IdentitySection, ClassResourcesSection, ProficienciesSection] },
       { sections: [AbilitiesSection, SkillsSection] },
       { sections: [HitPointsSection, DefenseSection, ConditionsSection, HitDiceSection, AttacksSection] },
     ],
   },
+  // Una sola card a tutta larghezza: ogni classe sta su una riga.
+  { id: 'classes', label: 'Classi', Icon: GraduationCap, columns: [{ sections: [ClassesSection], span: 3 }] },
   {
     id: 'gear',
     label: 'Magia ed equipaggiamento',

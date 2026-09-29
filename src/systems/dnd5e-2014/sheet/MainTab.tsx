@@ -47,7 +47,7 @@ export function ClassesSection({ data, onChange }: TabProps) {
         const patch = (p: Partial<ClassEntry>) => setClasses(updateById(data.classes, k.id, p));
         const info = k.classId ? CLASSES[k.classId] : null;
         return (
-          <div className="row" key={k.id}>
+          <div className="class-row" key={k.id}>
             <Select
               label="Classe"
               value={k.classId ?? 'none'}

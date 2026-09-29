@@ -7,6 +7,10 @@ function panel() {
   return within(screen.getByRole('tabpanel', { name: 'Principale' }));
 }
 
+function classesPanel() {
+  return within(screen.getByRole('tabpanel', { name: 'Classi' }));
+}
+
 describe('tab Principale', () => {
   it('aggiorna il modificatore quando cambia il punteggio', async () => {
     const user = userEvent.setup();
@@ -30,11 +34,11 @@ describe('tab Principale', () => {
     const user = userEvent.setup();
     renderSheet();
     expect(panel().queryByText(/Factotum/)).toBeNull();
-    await user.selectOptions(panel().getByLabelText('Classe'), 'bard');
-    const level = panel().getByLabelText('Livello');
+    await user.selectOptions(classesPanel().getByLabelText('Classe'), 'bard');
+    const level = classesPanel().getByLabelText('Livello');
     await user.clear(level);
     await user.type(level, '5');
-    expect(panel().getByLabelText('Bonus competenza')).toHaveTextContent('+3');
+    expect(classesPanel().getByLabelText('Bonus competenza')).toHaveTextContent('+3');
 
     const stealth = panel().getByRole('button', { name: /^Competenza Furtività/ });
     await user.click(stealth);
@@ -49,20 +53,20 @@ describe('tab Principale', () => {
   it('aggiunge e rimuove classi', async () => {
     const user = userEvent.setup();
     const { data } = renderSheet();
-    await user.click(panel().getByRole('button', { name: '+ Classe' }));
-    expect(panel().getAllByLabelText('Classe')).toHaveLength(2);
-    expect(panel().getByLabelText('Livello totale')).toHaveTextContent('2');
-    await user.click(panel().getAllByRole('button', { name: /Rimuovi classe/ })[0]);
+    await user.click(classesPanel().getByRole('button', { name: '+ Classe' }));
+    expect(classesPanel().getAllByLabelText('Classe')).toHaveLength(2);
+    expect(classesPanel().getByLabelText('Livello totale')).toHaveTextContent('2');
+    await user.click(classesPanel().getAllByRole('button', { name: /Rimuovi classe/ })[0]);
     expect(data().classes).toHaveLength(1);
   });
 
   it('la classe scelta dà dado vita e caratteristica da incantatore', async () => {
     const user = userEvent.setup();
     const { data } = renderSheet();
-    expect(panel().getByLabelText('Dado vita')).toHaveTextContent('—');
-    await user.selectOptions(panel().getByLabelText('Classe'), 'paladin');
+    expect(classesPanel().getByLabelText('Dado vita')).toHaveTextContent('—');
+    await user.selectOptions(classesPanel().getByLabelText('Classe'), 'paladin');
     expect(data().classes[0].classId).toBe('paladin');
-    expect(panel().getByLabelText('Dado vita')).toHaveTextContent('d10');
+    expect(classesPanel().getByLabelText('Dado vita')).toHaveTextContent('d10');
     expect(data().spellcasting.ability).toBe('cha');
   });
 
