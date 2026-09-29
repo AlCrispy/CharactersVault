@@ -60,13 +60,31 @@
 
 :root[data-theme='grimoire'] .card { background: radial-gradient(ellipse 90% 60% at 50% 0%, rgba(217, 179, 91, 0.07), transparent 70%), linear-gradient(180deg, rgba(30, 24, 16, 0.96), rgba(20, 16, 11, 0.96)); }
 :root[data-theme='grimoire'] .card::before {
-  inset: -4px;
+  inset: 3px;
   background-image:
     url('./assets/grimoire/corner-tl.svg'),
     url('./assets/grimoire/corner-tr.svg'),
     url('./assets/grimoire/corner-bl.svg'),
     url('./assets/grimoire/corner-br.svg');
   background-size: 30px 30px;
+}
+
+/* Astrolabio alchemico nell'angolo della card, sempre in lenta rotazione (solo transform). */
+:root[data-theme='grimoire'] .card { isolation: isolate; overflow: hidden; }
+:root[data-theme='grimoire'] .card.modal { overflow-y: auto; }
+:root[data-theme='grimoire'] .card::after {
+  content: '';
+  position: absolute;
+  top: -70px;
+  right: -70px;
+  width: 210px;
+  height: 210px;
+  z-index: -1;
+  pointer-events: none;
+  background: url('./assets/grimoire/heptagram.svg') center / contain no-repeat, url('./assets/grimoire/astrolabe.svg') center / contain no-repeat;
+  opacity: 0.16;
+  animation: ward-spin 90s linear infinite;
+  will-change: transform;
 }
 
 /* Divisori: fregio a volute al posto del rombo. */
@@ -210,37 +228,4 @@
 }
 @media (min-width: 1024px) {
   :root[data-theme='grimoire'] .sheet[data-layout='desktop'] .tab[aria-selected='true']::after { top: auto; bottom: -4px; }
-}
-
-/* ——— Astrolabio alchemico dietro le card ———
- * Due livelli fissi al centro dello schermo, animati solo con transform:
- * l'anello graduato con le 12 case e i simboli degli elementi gira in un senso,
- * il disco con l'eptagramma e il sole nell'altro. */
-:root[data-theme='grimoire'] #root::before,
-:root[data-theme='grimoire'] #root::after {
-  content: '';
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  width: 880px;
-  height: 880px;
-  margin: -440px 0 0 -440px;
-  z-index: -1;
-  pointer-events: none;
-  background: center / contain no-repeat;
-  will-change: transform;
-}
-:root[data-theme='grimoire'] #root::before {
-  background-image: url('./assets/grimoire/astrolabe.svg');
-  opacity: 0.09;
-  animation: ward-spin 260s linear infinite;
-}
-:root[data-theme='grimoire'] #root::after {
-  background-image: url('./assets/grimoire/heptagram.svg');
-  opacity: 0.08;
-  animation: ward-spin 180s linear infinite reverse;
-}
-@media (max-width: 700px) {
-  :root[data-theme='grimoire'] #root::before,
-  :root[data-theme='grimoire'] #root::after { width: 640px; height: 640px; margin: -320px 0 0 -320px; }
 }
