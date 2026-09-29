@@ -1,11 +1,12 @@
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { db } from '../core/db';
 import { buildExportFile } from '../core/importExport';
 import { createCharacter, putCharacters } from '../core/repository';
 import '../systems';
 import { dnd5e } from '../systems/dnd5e-2014';
+import { ConfirmProvider } from '../ui/confirm';
 import { CharacterList } from './CharacterList';
 
 beforeEach(async () => {
@@ -40,21 +41,32 @@ describe('CharacterList', () => {
 
   it('elimina dopo conferma', async () => {
     const user = userEvent.setup();
-    vi.spyOn(window, 'confirm').mockReturnValue(true);
     await createCharacter(dnd5e, 'Lia');
-    render(<CharacterList persisted={true} />);
+    render(
+      <ConfirmProvider>
+        <CharacterList persisted={true} />
+      </ConfirmProvider>,
+    );
     await screen.findByText('Lia');
     await user.click(within(row('Lia')).getByRole('button', { name: 'Elimina' }));
+    const dialog = within(screen.getByRole('dialog', { name: 'Eliminare il personaggio?' }));
+    expect(dialog.getByText(/"Lia" verrà eliminato/)).toBeInTheDocument();
+    await user.click(dialog.getByRole('button', { name: 'Elimina' }));
     await waitFor(async () => expect(await db.characters.count()).toBe(0));
   });
 
   it('non elimina se annullato', async () => {
     const user = userEvent.setup();
-    vi.spyOn(window, 'confirm').mockReturnValue(false);
     await createCharacter(dnd5e, 'Lia');
-    render(<CharacterList persisted={true} />);
+    render(
+      <ConfirmProvider>
+        <CharacterList persisted={true} />
+      </ConfirmProvider>,
+    );
     await screen.findByText('Lia');
     await user.click(within(row('Lia')).getByRole('button', { name: 'Elimina' }));
+    await user.click(screen.getByRole('button', { name: 'Annulla' }));
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
     expect(await db.characters.count()).toBe(1);
   });
 

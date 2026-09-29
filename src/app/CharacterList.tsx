@@ -7,6 +7,7 @@ import { registry } from '../core/registry';
 import { createCharacter, deleteCharacter, duplicateCharacter, existingIds, listCharacters, putCharacters } from '../core/repository';
 import { daysSince, getLastBackup, setLastBackup } from '../core/storage';
 import type { CharacterRecord } from '../core/types';
+import { useConfirm } from '../ui/confirm';
 import { navigate, routeToHash } from './route';
 
 function backupText(last: Date | null): string {
@@ -23,6 +24,7 @@ export function CharacterList({ persisted }: { persisted: boolean | null }) {
   const [newName, setNewName] = useState('');
   const [message, setMessage] = useState<string | null>(null);
   const [lastBackup, setLastBackupState] = useState(getLastBackup);
+  const confirm = useConfirm();
   const fileInput = useRef<HTMLInputElement>(null);
 
   async function handleCreate(e: FormEvent) {
@@ -46,7 +48,13 @@ export function CharacterList({ persisted }: { persisted: boolean | null }) {
   }
 
   async function handleDelete(record: CharacterRecord) {
-    if (!window.confirm(`Eliminare "${record.name || 'Senza nome'}"? L'operazione non si può annullare.`)) return;
+    const ok = await confirm({
+      title: 'Eliminare il personaggio?',
+      message: `"${record.name || 'Senza nome'}" verrà eliminato. L'operazione non si può annullare.`,
+      confirmLabel: 'Elimina',
+      danger: true,
+    });
+    if (!ok) return;
     await deleteCharacter(record.id);
   }
 
@@ -59,9 +67,12 @@ export function CharacterList({ persisted }: { persisted: boolean | null }) {
       const { fresh, conflicting } = splitConflicts(incoming, await existingIds());
       let toSave = fresh;
       if (conflicting.length > 0) {
-        const overwrite = window.confirm(
-          `${conflicting.length} personaggi esistono già.\nOK = sovrascrivi, Annulla = importa come copie.`,
-        );
+        const overwrite = await confirm({
+          title: 'Personaggi già presenti',
+          message: `${conflicting.length} personaggi del file esistono già. Vuoi sovrascriverli o importarli come copie?`,
+          confirmLabel: 'Sovrascrivi',
+          cancelLabel: 'Importa come copie',
+        });
         toSave = [...fresh, ...(overwrite ? conflicting : conflicting.map((r) => asCopy(r)))];
       }
       await putCharacters(toSave);

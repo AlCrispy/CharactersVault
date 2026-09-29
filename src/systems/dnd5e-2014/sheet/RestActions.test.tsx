@@ -1,7 +1,8 @@
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useState } from 'react';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
+import { ConfirmProvider } from '../../../ui/confirm';
 import { createBlank, newClass, type Dnd5eCharacter } from '../model';
 import { RestActions } from './RestActions';
 import { Sheet } from './Sheet';
@@ -20,19 +21,15 @@ function renderWithRests(initial: Dnd5eCharacter) {
     const [data, setData] = useState(initial);
     latest.current = data;
     return (
-      <>
+      <ConfirmProvider>
         <RestActions data={data} onChange={setData} />
         <Sheet data={data} onChange={setData} />
-      </>
+      </ConfirmProvider>
     );
   }
   render(<Harness />);
   return { data: () => latest.current };
 }
-
-afterEach(() => {
-  vi.restoreAllMocks();
-});
 
 describe('riposi', () => {
   it('riposo breve in una finestra: spende dadi vita e recupera PF', async () => {
@@ -64,21 +61,21 @@ describe('riposi', () => {
 
   it('riposo lungo dopo conferma ricarica anche le risorse', async () => {
     const user = userEvent.setup();
-    vi.spyOn(window, 'confirm').mockReturnValue(true);
     const c = wounded();
     c.classes = [{ ...newClass(), level: 5, classId: 'monk' }];
     c.classResourcesUsed = { ki: 4 };
     const { data } = renderWithRests(c);
     await user.click(screen.getByRole('button', { name: 'Riposo lungo' }));
+    await user.click(within(screen.getByRole('dialog', { name: 'Riposo lungo' })).getByRole('button', { name: 'Riposa' }));
     expect(data().hp).toEqual({ max: 20, current: 20, temp: 0 });
     expect(data().classResourcesUsed).toEqual({});
   });
 
   it('riposo lungo annullato non cambia nulla', async () => {
     const user = userEvent.setup();
-    vi.spyOn(window, 'confirm').mockReturnValue(false);
     const { data } = renderWithRests(wounded());
     await user.click(screen.getByRole('button', { name: 'Riposo lungo' }));
+    await user.click(screen.getByRole('button', { name: 'Annulla' }));
     expect(data().hp.current).toBe(5);
   });
 });

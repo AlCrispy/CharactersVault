@@ -1,6 +1,7 @@
 import { Hourglass, Moon } from 'lucide-react';
 import { useState } from 'react';
 import type { SheetProps } from '../../../core/types';
+import { useConfirm } from '../../../ui/confirm';
 import { Modal } from '../../../ui/Modal';
 import { longRest, shortRest } from '../actions';
 import type { Dnd5eCharacter } from '../model';
@@ -9,9 +10,15 @@ import { ShortRestForm } from './ShortRestForm';
 /** Tasti dei riposi nell'header della scheda. */
 export function RestActions({ data, onChange }: SheetProps<Dnd5eCharacter>) {
   const [resting, setResting] = useState(false);
+  const confirm = useConfirm();
 
-  function handleLongRest() {
-    if (window.confirm('Riposo lungo: ripristinare PF, slot incantesimo, dadi vita e risorse?')) onChange(longRest(data));
+  async function handleLongRest() {
+    const ok = await confirm({
+      title: 'Riposo lungo',
+      message: 'Ripristinare PF, slot incantesimo, dadi vita e risorse?',
+      confirmLabel: 'Riposa',
+    });
+    if (ok) onChange(longRest(data));
   }
 
   return (

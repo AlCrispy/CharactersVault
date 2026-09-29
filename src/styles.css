@@ -782,3 +782,8 @@ a.character-name:hover { color: var(--gold-bright); }
   .class-row > :nth-child(-n + 2) { grid-column: 1 / -1; }
   .class-row > :last-child { justify-self: end; }
 }
+
+/* ——— Finestre di conferma (ui/confirm.tsx): stesso stile delle finestre del tema ——— */
+
+.confirm-message { margin: 14px 0 20px; white-space: pre-line; }
+.confirm-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px; }
