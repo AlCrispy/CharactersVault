@@ -268,10 +268,10 @@
 
 /* ——— Scheda ——— */
 
-:root[data-theme='heraldic'] .sheet-header { background: rgba(15, 22, 38, 0.92); border-bottom: 1px solid var(--gold-dim); box-shadow: none; }
+:root[data-theme='heraldic'] .sheet-header { background: rgba(15, 22, 38, 0.97); border-bottom: 1px solid var(--gold-dim); box-shadow: none; }
 :root[data-theme='heraldic'] .sheet-title { font-weight: 700; font-size: 1.25rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--parch); text-shadow: none; }
 
-:root[data-theme='heraldic'] .tabbar { background: rgba(15, 22, 38, 0.95); border-top: 1px solid var(--gold-dim); box-shadow: none; }
+:root[data-theme='heraldic'] .tabbar { background: rgba(15, 22, 38, 0.98); border-top: 1px solid var(--gold-dim); box-shadow: none; }
 :root[data-theme='heraldic'] .tab { isolation: isolate; font-size: 0.7rem; }
 :root[data-theme='heraldic'] .tab[aria-selected='true'] { color: var(--gold); }
 :root[data-theme='heraldic'] .tab[aria-selected='true'] svg { filter: none; }

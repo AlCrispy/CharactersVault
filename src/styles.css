@@ -513,9 +513,7 @@ a.character-name:hover { color: var(--gold-bright); }
   align-items: center;
   gap: 14px;
   padding: 10px 16px;
-  background: rgba(14, 11, 8, 0.86);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: rgba(14, 11, 8, 0.97);
   border-bottom: 1px solid var(--gold-dim);
   box-shadow: 0 1px 0 var(--ink-2), 0 2px 0 var(--gold-line), 0 8px 20px rgba(0, 0, 0, 0.45);
 }
@@ -545,16 +543,11 @@ a.character-name:hover { color: var(--gold-bright); }
   bottom: 0;
   z-index: 3;
   display: flex;
-  overflow-x: auto;
-  scrollbar-width: none;
   padding-bottom: env(safe-area-inset-bottom);
-  background: rgba(14, 11, 8, 0.92);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: rgba(14, 11, 8, 0.98);
   border-top: 1px solid var(--gold-dim);
   box-shadow: 0 -1px 0 var(--ink-2), 0 -2px 0 var(--gold-line), 0 -10px 24px rgba(0, 0, 0, 0.5);
 }
-.tabbar::-webkit-scrollbar { display: none; }
 .tab {
   position: relative;
   flex: 1 0 auto;
@@ -564,6 +557,7 @@ a.character-name:hover { color: var(--gold-bright); }
   justify-content: center;
   gap: 3px;
   min-width: 72px;
+  overflow: hidden;
   min-height: var(--tabbar-h);
   padding: 0 10px;
   font-family: var(--font-caps);
@@ -628,12 +622,21 @@ a.character-name:hover { color: var(--gold-bright); }
   .sheet[data-layout='desktop'] .tab[aria-selected='true']::before { top: auto; bottom: -1px; left: 12%; right: 12%; }
 }
 
-/* Su schermi stretti: solo icone, etichetta visibile per il tab attivo. */
+/*
+ * Su schermi stretti: solo icone, etichetta visibile per il tab attivo.
+ * L'etichetta resta dentro la sua tab (troncata se serve) per non coprire le icone vicine.
+ */
 @media (max-width: 520px) {
-  .tab { flex: 1 1 0; min-width: 0; padding: 0 4px; transition: flex-grow 0.3s var(--ease), color 0.2s var(--ease); }
+  .tab { flex: 1 1 0; min-width: 0; padding: 0 4px; }
   .tab span { display: none; }
   .tab[aria-selected='true'] { flex-grow: 2.4; }
-  .tab[aria-selected='true'] span { display: block; animation: rise 0.25s var(--ease); }
+  .tab[aria-selected='true'] span {
+    display: block;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 }
 
 @media (max-width: 420px) {
@@ -642,6 +645,19 @@ a.character-name:hover { color: var(--gold-bright); }
   .grid-3 { grid-template-columns: 1fr 1fr; }
   .skill { grid-template-columns: 32px 1fr 52px 40px; gap: 6px; }
   h1 { font-size: 1.7rem; }
+}
+
+/* Telefoni e tablet: niente grana (filtro SVG ridisegnato a ogni scroll) né ombre grandi e sfocate. */
+@media (max-width: 1023px) {
+  body {
+    background:
+      radial-gradient(ellipse 120% 70% at 50% -10%, #2a1f12 0%, rgba(42, 31, 18, 0) 60%),
+      var(--ink);
+  }
+  .card { box-shadow: inset 0 0 0 3px var(--ink-2), inset 0 0 0 4px var(--gold-line); }
+  .ability { box-shadow: inset 0 0 0 3px var(--ink-2), inset 0 0 0 4px rgba(107, 84, 35, 0.4); }
+  .btn, .btn:hover { box-shadow: none; }
+  .ability-mod, .stat-value, .sheet-title, h1 { text-shadow: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -659,9 +675,7 @@ a.character-name:hover { color: var(--gold-bright); }
   display: grid;
   place-items: center;
   padding: 16px;
-  background: rgba(8, 6, 4, 0.72);
-  backdrop-filter: blur(3px);
-  -webkit-backdrop-filter: blur(3px);
+  background: rgba(8, 6, 4, 0.8);
   animation: rise 0.2s var(--ease);
 }
 .modal { width: min(480px, 100%); max-height: calc(100dvh - 32px); overflow-y: auto; background: linear-gradient(180deg, var(--ink-3), var(--ink-2)); }
