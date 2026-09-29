@@ -1,9 +1,9 @@
 /*
- * ——— Tema Abiuratore: crepuscolo arcano ———
- * Indaco-violetto profondo, rune color pervinca che brillano piano.
- * Niente contorni: superfici separate da tono e ombre morbide.
+ * ——— Tema Abiuratore: interdizioni schematiche ———
+ * La magia arcana come diagramma: griglia tecnica, quadrati e rombi annidati, righelli di tacche,
+ * staffe d'angolo. Niente cerchi: i limiti li impongono gli angoli.
+ * Indaco-violetto profondo, linee pervinca luminose, nessun contorno sulle superfici.
  * Si attiva con <html data-theme="abjurer"> e sovrascrive il Grimorio (styles.css).
- * Firma: cerchi di protezione con tacche runiche (modificatori, CA come Interdizione Arcana).
  * Colore: pervinca = valori calcolati e azioni, lavanda chiaro = ciò che scrivi, rosa cremisi = danno, verde = cura.
  */
 
@@ -27,32 +27,42 @@
   --well: #17162a;
   --glow: rgba(140, 170, 255, 0.35);
   --soft-shadow: 0 8px 24px rgba(8, 7, 20, 0.35);
-  /* Anello di tacche runiche: si applica a un ::before rotondo. */
-  --runes: repeating-conic-gradient(var(--gold) 0 1.6deg, transparent 1.6deg 12deg);
-  --ring-mask: radial-gradient(farthest-side, transparent calc(100% - 4px), #000 calc(100% - 4px));
+  --bracket: rgba(157, 184, 255, 0.55);
+  /* Staffe d'angolo: quattro "L" disegnate con gradienti (usare su un ::after posizionato). */
+  --brackets:
+    linear-gradient(var(--bracket), var(--bracket)) top left / 14px 1.5px no-repeat,
+    linear-gradient(var(--bracket), var(--bracket)) top left / 1.5px 14px no-repeat,
+    linear-gradient(var(--bracket), var(--bracket)) top right / 14px 1.5px no-repeat,
+    linear-gradient(var(--bracket), var(--bracket)) top right / 1.5px 14px no-repeat,
+    linear-gradient(var(--bracket), var(--bracket)) bottom left / 14px 1.5px no-repeat,
+    linear-gradient(var(--bracket), var(--bracket)) bottom left / 1.5px 14px no-repeat,
+    linear-gradient(var(--bracket), var(--bracket)) bottom right / 14px 1.5px no-repeat,
+    linear-gradient(var(--bracket), var(--bracket)) bottom right / 1.5px 14px no-repeat;
+  /* Righello: tacche lungo i quattro lati (usare su un ::after posizionato). */
+  --ruler:
+    repeating-linear-gradient(90deg, var(--gold) 0 1px, transparent 1px 6px) top / 100% 4px no-repeat,
+    repeating-linear-gradient(90deg, var(--gold) 0 1px, transparent 1px 6px) bottom / 100% 4px no-repeat,
+    repeating-linear-gradient(0deg, var(--gold) 0 1px, transparent 1px 6px) left / 4px 100% no-repeat,
+    repeating-linear-gradient(0deg, var(--gold) 0 1px, transparent 1px 6px) right / 4px 100% no-repeat;
 
   --font-display: 'Marcellus', 'Spectral', Georgia, serif;
   --font-body: 'Spectral', Georgia, 'Times New Roman', serif;
   --font-caps: 'Marcellus SC', 'Marcellus', Georgia, serif;
-  --radius: 12px;
-  --star: polygon(50% 0, 61% 39%, 100% 50%, 61% 61%, 50% 100%, 39% 61%, 0 50%, 39% 39%);
+  --radius: 2px;
 
   --chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%239db8ff' stroke-width='1.6'/%3E%3C/svg%3E");
-}
 
-/*
- * Cielo: nebulose e cerchi concentrici sul fondo (html), poi due livelli fissi animati
- * solo con transform: stelle che salgono piano e un grande sigillo che ruota in un angolo.
- */
-:root[data-theme='abjurer'] {
+  /* Cielo: nebulose e griglia tecnica sul fondo; sopra, due livelli fissi animati solo con transform. */
   background:
     radial-gradient(ellipse 80% 50% at 50% -5%, rgba(88, 96, 190, 0.45), transparent 70%),
     radial-gradient(ellipse 60% 45% at 0% 100%, rgba(120, 70, 170, 0.22), transparent 70%),
-    repeating-radial-gradient(circle at 50% -12%, transparent 0 62px, rgba(157, 184, 255, 0.035) 62px 63px),
+    linear-gradient(rgba(157, 184, 255, 0.035) 1px, transparent 1px) 0 0 / 44px 44px,
+    linear-gradient(90deg, rgba(157, 184, 255, 0.035) 1px, transparent 1px) 0 0 / 44px 44px,
     var(--ink);
   scrollbar-color: var(--gold-dim) transparent;
 }
 :root[data-theme='abjurer'] body { background: transparent; }
+/* Pulviscolo di quadratini e crocette che sale piano. */
 :root[data-theme='abjurer'] body::before {
   content: '';
   position: fixed;
@@ -63,6 +73,7 @@
   animation: star-drift 140s linear infinite;
   will-change: transform;
 }
+/* Un grande sigillo schematico che ruota in un angolo. */
 :root[data-theme='abjurer'] body::after {
   content: '';
   position: fixed;
@@ -74,10 +85,11 @@
   pointer-events: none;
   background: url('./assets/abjurer/sigil.svg') center / contain no-repeat;
   opacity: 0.06;
-  animation: ward-spin 240s linear infinite;
+  animation: ward-spin 300s linear infinite;
   will-change: transform;
 }
 @keyframes star-drift { to { transform: translateY(-320px); } }
+@keyframes ward-spin { to { transform: rotate(360deg); } }
 
 :root[data-theme='abjurer'] ::selection { background: rgba(157, 184, 255, 0.28); color: var(--parch); }
 
@@ -94,18 +106,17 @@
   color: transparent;
 }
 :root[data-theme='abjurer'] h1 { text-shadow: none; filter: drop-shadow(0 0 14px rgba(140, 170, 255, 0.45)); }
-:root[data-theme='abjurer'] h2 { color: var(--parch); letter-spacing: 0.04em; }
+:root[data-theme='abjurer'] h2 { letter-spacing: 0.04em; }
+:root[data-theme='abjurer'] h3 { color: var(--gold); }
 :root[data-theme='abjurer'] .section-header h2::before {
-  content: '✦';
+  content: '◈';
   margin-right: 10px;
-  font-size: 0.75em;
-  vertical-align: 0.12em;
+  font-size: 0.8em;
   -webkit-text-fill-color: var(--gold);
   text-shadow: 0 0 10px var(--gold);
 }
-:root[data-theme='abjurer'] h3 { color: var(--gold); }
 
-/* ——— Card: solo tono e ombra ——— */
+/* ——— Card: superficie senza bordo, staffe d'angolo e sigillo in filigrana ——— */
 
 :root[data-theme='abjurer'] .card {
   isolation: isolate;
@@ -115,7 +126,6 @@
   box-shadow: var(--soft-shadow);
 }
 :root[data-theme='abjurer'] .card.modal { overflow-y: auto; }
-/* Sigillo in filigrana nell'angolo. */
 :root[data-theme='abjurer'] .card::before {
   inset: auto;
   top: -50px;
@@ -127,74 +137,67 @@
   opacity: 0.1;
   transition: transform 1.4s var(--ease), opacity 0.6s var(--ease);
 }
-/* Sigillo di luce sul bordo superiore. */
 :root[data-theme='abjurer'] .card::after {
   content: '';
   position: absolute;
-  top: 0;
-  left: 28%;
-  right: 28%;
-  height: 1px;
+  inset: 6px;
   pointer-events: none;
-  background: linear-gradient(90deg, transparent, var(--gold), transparent);
-  box-shadow: 0 0 10px 1px var(--glow);
-  opacity: 0.7;
+  background: var(--brackets);
+  transition: inset 0.4s var(--ease);
 }
 @media (hover: hover) {
-  :root[data-theme='abjurer'] .card:hover::before { opacity: 0.18; transform: rotate(30deg); }
+  /* Al passaggio il sigillo scatta di 45° e le staffe si stringono. */
+  :root[data-theme='abjurer'] .card:hover::before { opacity: 0.18; transform: rotate(45deg); }
+  :root[data-theme='abjurer'] .card:hover::after { inset: 3px; }
 }
-:root[data-theme='abjurer'] .ornament { height: 20px; color: transparent; background: url('./assets/abjurer/sigil.svg') center / 20px no-repeat; }
+:root[data-theme='abjurer'] .ornament { height: 20px; color: transparent; background: url('./assets/abjurer/ward.svg') center / 20px no-repeat; }
 :root[data-theme='abjurer'] .ornament::before { background: linear-gradient(90deg, transparent, rgba(157, 184, 255, 0.35)); }
 :root[data-theme='abjurer'] .ornament::after { background: linear-gradient(90deg, rgba(157, 184, 255, 0.35), transparent); }
-:root[data-theme='abjurer'] .create-form h2::after { content: ''; width: 5px; height: 5px; margin: 10px auto 0; border-radius: 50%; background: var(--gold); box-shadow: 0 0 8px var(--glow); }
+:root[data-theme='abjurer'] .create-form h2::after { content: ''; width: 6px; height: 6px; margin: 10px auto 0; background: var(--gold); transform: rotate(45deg); box-shadow: 0 0 8px var(--glow); }
 
 /* ——— Campi: pozzetti scavati nella superficie ——— */
 
 :root[data-theme='abjurer'] input[type='text'], :root[data-theme='abjurer'] select, :root[data-theme='abjurer'] textarea {
   background: var(--well);
   border-color: transparent;
-  border-radius: 10px;
   box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.35);
 }
 :root[data-theme='abjurer'] select { background-image: var(--chevron); background-repeat: no-repeat; background-size: 12px 8px; background-position: right 11px center; }
 :root[data-theme='abjurer'] select option { background: var(--ink-3); }
 :root[data-theme='abjurer'] input[type='text']::placeholder, :root[data-theme='abjurer'] textarea::placeholder { color: #6c6a8c; }
 :root[data-theme='abjurer'] input[type='text']:hover, :root[data-theme='abjurer'] select:hover, :root[data-theme='abjurer'] textarea:hover { border-color: transparent; }
-:root[data-theme='abjurer'] input[type='text']:focus, :root[data-theme='abjurer'] select:focus, :root[data-theme='abjurer'] textarea:focus { border-color: transparent; box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.35), 0 0 0 2px var(--gold-faint), 0 0 14px var(--glow); }
+:root[data-theme='abjurer'] input[type='text']:focus, :root[data-theme='abjurer'] select:focus, :root[data-theme='abjurer'] textarea:focus { border-color: transparent; box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.35), 0 0 0 1px var(--gold), 0 0 14px var(--glow); }
 
-/* Checkbox e pips: rune circolari che si accendono. */
+/* Checkbox e pips: rombi; spuntati diventano un rombo doppio che si accende. */
 :root[data-theme='abjurer'] input[type='checkbox'] {
-  width: 18px;
-  height: 18px;
+  width: 14px;
+  height: 14px;
+  margin: 7px;
   border: 0;
-  border-radius: 50%;
+  border-radius: 0;
   background: var(--well);
   box-shadow: inset 0 0 0 1.5px var(--gold-dim);
-  transform: none;
+  transform: rotate(45deg);
 }
 :root[data-theme='abjurer'] input[type='checkbox']:hover { box-shadow: inset 0 0 0 1.5px var(--gold); }
-/* Spuntata diventa una stella a quattro punte che si accende. */
 :root[data-theme='abjurer'] input[type='checkbox']:checked {
-  border-radius: 0;
-  background: radial-gradient(circle, #fff 0 12%, var(--gold-bright) 35%, var(--gold) 70%);
-  box-shadow: none;
-  clip-path: var(--star);
-  animation: star-pop 0.45s var(--ease);
+  background: var(--gold);
+  box-shadow: inset 0 0 0 3px var(--well), inset 0 0 0 4.5px var(--gold), 0 0 10px var(--glow);
+  animation: ward-pop 0.45s var(--ease);
 }
-@keyframes star-pop {
-  0% { transform: scale(0.2) rotate(-45deg); }
-  60% { transform: scale(1.35) rotate(10deg); }
-  100% { transform: none; }
+:root[data-theme='abjurer'] input[type='checkbox']:active { transform: rotate(45deg) scale(0.85); }
+@keyframes ward-pop {
+  0% { transform: rotate(-45deg) scale(0.2); }
+  60% { transform: rotate(60deg) scale(1.35); }
+  100% { transform: rotate(45deg); }
 }
-:root[data-theme='abjurer'] input[type='checkbox']:active { transform: scale(0.88); }
 
-/* ——— Pulsanti: pillole piene ——— */
+/* ——— Pulsanti: blocchi squadrati ——— */
 
 :root[data-theme='abjurer'] .btn {
   color: var(--parch);
   background: linear-gradient(180deg, #3a3864, #2d2b4a);
   border-color: transparent;
-  border-radius: 999px;
   box-shadow: inset 0 1px 0 rgba(195, 211, 255, 0.08), 0 2px 8px rgba(8, 7, 20, 0.3);
 }
 :root[data-theme='abjurer'] .btn:hover { color: var(--gold-bright); border-color: transparent; background: #3a3860; box-shadow: 0 0 12px var(--gold-faint); }
@@ -219,136 +222,121 @@
 
 /* ——— Valori ——— */
 
-:root[data-theme='abjurer'] .stat {
-  background: linear-gradient(180deg, #37355a, #2c2a47);
-  border-color: transparent;
-  border-radius: 14px;
-  box-shadow: inset 0 1px 0 rgba(195, 211, 255, 0.07);
-}
+:root[data-theme='abjurer'] .stat { background: linear-gradient(180deg, #37355a, #2c2a47); border-color: transparent; border-radius: var(--radius); box-shadow: inset 0 1px 0 rgba(195, 211, 255, 0.07); }
 :root[data-theme='abjurer'] .stat-value { font-weight: 600; color: var(--gold); text-shadow: 0 0 12px var(--glow); }
 
-/* CA come Interdizione Arcana: cerchio luminoso cinto di rune. */
+/* CA: quadrato di interdizione con glifo a otto punte, cornice a righello e alone che respira. */
 :root[data-theme='abjurer'] .stats-row { align-items: center; }
 :root[data-theme='abjurer'] .stat.shield {
-  width: 96px;
-  height: 96px;
+  width: 92px;
+  height: 92px;
   min-width: 0;
-  margin: 8px;
+  margin: 12px;
   padding: 0;
   clip-path: none;
-  border-radius: 50%;
-  background: url('./assets/abjurer/hexagram.svg') center / 86% no-repeat, radial-gradient(circle at 50% 40%, #3a3868 0%, var(--ink-4) 70%);
+  background: url('./assets/abjurer/ward.svg') center / 100% no-repeat, radial-gradient(circle at 50% 40%, #3a3868 0%, var(--ink-4) 75%);
   box-shadow: 0 0 24px var(--glow), inset 0 0 18px rgba(157, 184, 255, 0.18);
 }
-/* L'Interdizione respira: alone che pulsa (solo opacità). */
+:root[data-theme='abjurer'] .stat.shield::before {
+  display: block;
+  inset: -10px;
+  clip-path: none;
+  background: var(--ruler);
+  opacity: 0.45;
+}
 :root[data-theme='abjurer'] .stat.shield::after {
   content: '';
   position: absolute;
   inset: 0;
   z-index: -1;
-  border-radius: 50%;
   box-shadow: 0 0 34px 8px rgba(140, 170, 255, 0.5);
   animation: ward-breathe 3.6s ease-in-out infinite alternate;
 }
 @keyframes ward-breathe { from { opacity: 0.25; } to { opacity: 1; } }
-:root[data-theme='abjurer'] .stat.shield::before {
-  display: block;
-  inset: -10px;
-  clip-path: none;
-  border-radius: 50%;
-  background: var(--runes);
-  -webkit-mask: var(--ring-mask);
-  mask: var(--ring-mask);
-  opacity: 0.6;
-  animation: ward-spin 60s linear infinite;
-}
 :root[data-theme='abjurer'] .stat.shield .stat-value { font-size: 1.8rem; }
 
-/* ——— Caratteristiche: ogni modificatore dentro un cerchio di protezione ——— */
+/* ——— Caratteristiche: modificatore dentro un quadrato con rombo sovrapposto ——— */
 
-:root[data-theme='abjurer'] .ability { gap: 4px; padding: 12px 8px 10px; background: var(--ink-4); border-color: transparent; border-radius: 18px; box-shadow: none; }
+:root[data-theme='abjurer'] .ability { gap: 4px; padding: 14px 8px 10px; background: var(--ink-4); border-color: transparent; border-radius: var(--radius); box-shadow: none; }
+:root[data-theme='abjurer'] .field.ability-score input { border-radius: var(--radius); }
 :root[data-theme='abjurer'] .ability:focus-within { box-shadow: 0 0 0 1px var(--gold-faint), 0 0 20px var(--glow); }
 :root[data-theme='abjurer'] .ability-mod {
   position: relative;
   display: grid;
   place-items: center;
-  width: 60px;
-  height: 60px;
-  margin: 8px 0 6px;
-  font-size: 1.5rem;
+  width: 52px;
+  height: 52px;
+  margin: 12px 0 10px;
+  font-size: 1.45rem;
   font-weight: 600;
   color: var(--gold);
   text-shadow: 0 0 12px var(--glow);
-  border-radius: 50%;
-  background: url('./assets/abjurer/hexagram.svg') center / 80% no-repeat, radial-gradient(circle, #34325a 40%, var(--ink-4) 72%);
+  background: radial-gradient(circle, #34325a 30%, var(--ink-4) 80%);
+  box-shadow: inset 0 0 0 1px rgba(157, 184, 255, 0.45);
 }
+/* Il rombo: stesso quadrato ruotato di 45°, forma con il quadrato una stella a otto punte. */
 :root[data-theme='abjurer'] .ability-mod::before {
   content: '';
   position: absolute;
-  inset: -6px;
-  border-radius: 50%;
-  background: var(--runes);
-  -webkit-mask: var(--ring-mask);
-  mask: var(--ring-mask);
-  opacity: 0.4;
+  inset: 0;
+  z-index: -1;
+  box-shadow: inset 0 0 0 1px rgba(157, 184, 255, 0.45);
+  background: var(--ink-4);
+  transform: rotate(45deg);
+  transition: transform 0.6s var(--ease);
 }
-/* Secondo anello, a puntini. */
+:root[data-theme='abjurer'] .ability-mod { isolation: isolate; }
+/* Righello tutto intorno. */
 :root[data-theme='abjurer'] .ability-mod::after {
   content: '';
   position: absolute;
-  inset: -13px;
-  border-radius: 50%;
-  background: repeating-conic-gradient(var(--gold) 0 1deg, transparent 1deg 7.5deg);
-  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 1.5px), #000 calc(100% - 1.5px));
-  mask: radial-gradient(farthest-side, transparent calc(100% - 1.5px), #000 calc(100% - 1.5px));
+  inset: -12px;
+  pointer-events: none;
+  background: var(--ruler);
   opacity: 0.25;
+  transition: opacity 0.4s var(--ease);
 }
-/* Il cerchio della caratteristica che stai modificando si attiva: gli anelli ruotano in versi opposti. */
-:root[data-theme='abjurer'] .ability:focus-within .ability-mod::before { opacity: 0.95; animation: ward-spin 14s linear infinite; }
-:root[data-theme='abjurer'] .ability:focus-within .ability-mod::after { opacity: 0.6; animation: ward-spin 22s linear infinite reverse; }
-@keyframes ward-spin { to { transform: rotate(360deg); } }
-:root[data-theme='abjurer'] .field.ability-score input { border-radius: 999px; }
+/* Il glifo della caratteristica che stai modificando si attiva: il rombo ruota a scatti di 90°. */
+:root[data-theme='abjurer'] .ability:focus-within .ability-mod::before { box-shadow: inset 0 0 0 1px var(--gold), 0 0 14px var(--glow); animation: ward-step 4s var(--ease) infinite; }
+:root[data-theme='abjurer'] .ability:focus-within .ability-mod::after { opacity: 0.7; }
+@keyframes ward-step {
+  0%, 20% { transform: rotate(45deg); }
+  25%, 45% { transform: rotate(135deg); }
+  50%, 70% { transform: rotate(225deg); }
+  75%, 95% { transform: rotate(315deg); }
+  100% { transform: rotate(405deg); }
+}
 :root[data-theme='abjurer'] .ability-save output { color: var(--parch); }
 
 /* ——— Abilità ——— */
 
-:root[data-theme='abjurer'] .skill { border-bottom: 1px solid var(--gold-line); }
-:root[data-theme='abjurer'] .prof-gem { width: 14px; height: 14px; border: 0; border-radius: 50%; background: var(--well); box-shadow: inset 0 0 0 1.5px var(--gold-dim); transform: none; }
-:root[data-theme='abjurer'] .prof-gem::after { inset: -5px; border-radius: 50%; border-color: var(--gold); }
-:root[data-theme='abjurer'] .prof-toggle:hover .prof-gem { box-shadow: inset 0 0 0 1.5px var(--gold); }
-:root[data-theme='abjurer'] .prof-toggle:active .prof-gem { transform: scale(0.85); }
-:root[data-theme='abjurer'] .prof-toggle { position: relative; }
-:root[data-theme='abjurer'] .prof-gem::after { display: none; }
-:root[data-theme='abjurer'] .prof-toggle[data-level='proficient'] .prof-gem,
-:root[data-theme='abjurer'] .prof-toggle[data-level='expertise'] .prof-gem {
-  width: 17px;
-  height: 17px;
-  border-radius: 0;
-  background: radial-gradient(circle, #fff 0 12%, var(--gold-bright) 35%, var(--gold) 70%);
-  box-shadow: none;
-  clip-path: var(--star);
-  animation: star-pop 0.45s var(--ease);
-}
-/* Maestria: la stella è cinta da un anello di rune. */
-:root[data-theme='abjurer'] .prof-toggle[data-level='expertise']::after {
-  content: '';
-  position: absolute;
-  inset: 3px;
-  border-radius: 50%;
-  background: var(--runes);
-  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 3px));
-  mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 3px));
-  animation: ward-spin 12s linear infinite;
-}
-:root[data-theme='abjurer'] .skill-value { color: var(--gold); text-shadow: 0 0 10px var(--glow); }
-:root[data-theme='abjurer'] .skill { transition: background 0.25s var(--ease); }
+:root[data-theme='abjurer'] .skill { border-bottom: 1px solid var(--gold-line); transition: background 0.25s var(--ease); }
 @media (hover: hover) {
   :root[data-theme='abjurer'] .skill:hover { background: linear-gradient(90deg, transparent, rgba(157, 184, 255, 0.07), transparent); }
 }
+:root[data-theme='abjurer'] .prof-toggle { position: relative; border-radius: 0; }
+:root[data-theme='abjurer'] .prof-gem { width: 13px; height: 13px; border: 0; border-radius: 0; background: var(--well); box-shadow: inset 0 0 0 1.5px var(--gold-dim); }
+:root[data-theme='abjurer'] .prof-gem::after { display: none; }
+:root[data-theme='abjurer'] .prof-toggle:hover .prof-gem { box-shadow: inset 0 0 0 1.5px var(--gold); }
+:root[data-theme='abjurer'] .prof-toggle[data-level='proficient'] .prof-gem,
+:root[data-theme='abjurer'] .prof-toggle[data-level='expertise'] .prof-gem {
+  background: var(--gold);
+  box-shadow: inset 0 0 0 3px var(--well), inset 0 0 0 4.5px var(--gold), 0 0 10px var(--glow);
+  animation: ward-pop 0.45s var(--ease);
+}
+/* Maestria: il rombo è racchiuso da un quadrato. */
+:root[data-theme='abjurer'] .prof-toggle[data-level='expertise']::after {
+  content: '';
+  position: absolute;
+  inset: 7px;
+  pointer-events: none;
+  box-shadow: inset 0 0 0 1px var(--gold), 0 0 8px var(--glow);
+}
+:root[data-theme='abjurer'] .skill-value { color: var(--gold); text-shadow: 0 0 10px var(--glow); }
 
 /* ——— Punti ferita: i PF temporanei sono una barriera pervinca ——— */
 
-:root[data-theme='abjurer'] .hp-bar { position: relative; background: var(--well); border-color: transparent; box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.4); }
+:root[data-theme='abjurer'] .hp-bar { position: relative; background: var(--well); border-color: transparent; border-radius: 0; box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.4); }
 /* Tacche ogni 10%. */
 :root[data-theme='abjurer'] .hp-bar::after {
   content: '';
@@ -362,20 +350,19 @@
 
 /* ——— Liste e testi ——— */
 
-:root[data-theme='abjurer'] .list-item { background: var(--ink-2); border-color: transparent; border-radius: 12px; }
+:root[data-theme='abjurer'] .list-item { background: var(--ink-2); border-color: transparent; }
 :root[data-theme='abjurer'] .list-summary strong { font-family: var(--font-display); }
 :root[data-theme='abjurer'] .list-summary span { color: var(--gold); }
 :root[data-theme='abjurer'] .slot-row { border-bottom-color: var(--gold-line); border-bottom-style: solid; }
 :root[data-theme='abjurer'] .slot-level { color: var(--gold); }
 :root[data-theme='abjurer'] details summary::before { color: var(--gold); }
-
 :root[data-theme='abjurer'] .warning { color: var(--warning); background: rgba(232, 194, 122, 0.08); border-color: transparent; }
 :root[data-theme='abjurer'] .message { background: var(--ink-2); border-color: transparent; border-left-color: var(--gold); }
 
 /* ——— Lista personaggi ——— */
 
 :root[data-theme='abjurer'] .logo { filter: drop-shadow(0 0 12px var(--glow)); }
-/* Il logo al centro di due cerchi arcani che ruotano in versi opposti. */
+/* Il logo al centro di due sigilli schematici che ruotano in versi opposti. */
 :root[data-theme='abjurer'] .page-header { position: relative; isolation: isolate; padding-top: 111px; margin-bottom: 30px; }
 :root[data-theme='abjurer'] .page-header::before,
 :root[data-theme='abjurer'] .page-header::after {
@@ -394,42 +381,40 @@
   background: url('./assets/abjurer/sigil.svg') center / contain no-repeat;
   opacity: 0.5;
   filter: drop-shadow(0 0 10px rgba(140, 170, 255, 0.55));
-  animation: ward-spin 90s linear infinite;
+  animation: ward-spin 120s linear infinite;
 }
 :root[data-theme='abjurer'] .page-header::after {
   top: 58px;
   width: 160px;
   height: 160px;
   margin-left: -80px;
-  background: url('./assets/abjurer/hexagram.svg') center / contain no-repeat;
+  background: url('./assets/abjurer/ward.svg') center / contain no-repeat;
   opacity: 0.9;
-  animation: ward-spin 50s linear infinite reverse;
+  animation: ward-spin 60s linear infinite reverse;
 }
 :root[data-theme='abjurer'] .monogram {
+  position: relative;
   font-family: var(--font-display);
   color: var(--gold);
-  background: radial-gradient(circle, #34325a 40%, var(--ink-4) 75%);
+  background: radial-gradient(circle, #34325a 30%, var(--ink-4) 80%);
   border-color: transparent;
-  box-shadow: 0 0 16px var(--glow);
+  border-radius: 0;
+  box-shadow: 0 0 16px var(--glow), inset 0 0 0 1px rgba(157, 184, 255, 0.45);
   text-shadow: 0 0 10px var(--glow);
 }
-:root[data-theme='abjurer'] .monogram { position: relative; }
 :root[data-theme='abjurer'] .monogram::after {
   content: '';
   position: absolute;
-  inset: -6px;
-  border-radius: 50%;
-  background: var(--runes);
-  -webkit-mask: var(--ring-mask);
-  mask: var(--ring-mask);
-  opacity: 0.5;
-  transition: opacity 0.4s var(--ease);
+  inset: -7px;
+  background: var(--ruler);
+  opacity: 0.4;
+  transition: opacity 0.4s var(--ease), inset 0.4s var(--ease);
 }
-:root[data-theme='abjurer'] .character-row:hover .monogram::after { opacity: 1; animation: ward-spin 10s linear infinite; }
+:root[data-theme='abjurer'] .character-row:hover .monogram::after { opacity: 0.9; inset: -4px; }
 
 /* ——— Scheda ——— */
 
-:root[data-theme='abjurer'] .sheet-header { background: rgba(27, 26, 46, 0.97); border-bottom-color: transparent; box-shadow: 0 6px 20px rgba(8, 7, 20, 0.35); }
+:root[data-theme='abjurer'] .sheet-header { background: var(--ink); border-bottom-color: transparent; box-shadow: 0 6px 20px rgba(8, 7, 20, 0.35); }
 :root[data-theme='abjurer'] .sheet-header::after {
   content: '';
   position: absolute;
@@ -440,10 +425,10 @@
   pointer-events: none;
   background: linear-gradient(90deg, transparent, rgba(157, 184, 255, 0.5), transparent);
 }
-:root[data-theme='abjurer'] .sheet-title { color: var(--parch); text-shadow: none; }
+:root[data-theme='abjurer'] .sheet-title { text-shadow: none; }
 :root[data-theme='abjurer'] .tabbar { background: rgba(32, 31, 53, 0.98); border-top-color: transparent; box-shadow: 0 -6px 20px rgba(8, 7, 20, 0.35); }
 :root[data-theme='abjurer'] .tab[aria-selected='true'] svg { filter: drop-shadow(0 0 6px var(--glow)); }
-/* Orbe luminoso sulla tab attiva. */
+/* Tab attiva: barra luminosa e parentesi quadre ai lati. */
 :root[data-theme='abjurer'] .tab[aria-selected='true']::before {
   top: -1px;
   left: 50%;
@@ -451,9 +436,22 @@
   width: 30px;
   height: 3px;
   transform: translateX(-50%);
-  border-radius: 0 0 4px 4px;
   background: var(--gold);
   box-shadow: 0 0 14px 3px var(--glow);
+}
+:root[data-theme='abjurer'] .tab[aria-selected='true']::after {
+  content: '';
+  position: absolute;
+  inset: 9px 6px;
+  pointer-events: none;
+  --b: rgba(157, 184, 255, 0.6);
+  background:
+    linear-gradient(var(--b), var(--b)) left top / 6px 1.5px no-repeat,
+    linear-gradient(var(--b), var(--b)) left top / 1.5px 100% no-repeat,
+    linear-gradient(var(--b), var(--b)) left bottom / 6px 1.5px no-repeat,
+    linear-gradient(var(--b), var(--b)) right top / 6px 1.5px no-repeat,
+    linear-gradient(var(--b), var(--b)) right top / 1.5px 100% no-repeat,
+    linear-gradient(var(--b), var(--b)) right bottom / 6px 1.5px no-repeat;
 }
 :root[data-theme='abjurer'] .modal-backdrop { background: rgba(10, 9, 22, 0.7); }
 :root[data-theme='abjurer'] .modal { background: var(--ink-3); }
@@ -461,5 +459,5 @@
 
 @media (min-width: 1024px) {
   :root[data-theme='abjurer'] .sheet[data-layout='desktop'] .tabbar { border-bottom-color: transparent; box-shadow: 0 6px 20px rgba(8, 7, 20, 0.35); }
-  :root[data-theme='abjurer'] .sheet[data-layout='desktop'] .tab[aria-selected='true']::before { top: auto; bottom: -1px; left: 50%; right: auto; border-radius: 4px 4px 0 0; }
+  :root[data-theme='abjurer'] .sheet[data-layout='desktop'] .tab[aria-selected='true']::before { top: auto; bottom: -1px; left: 50%; right: auto; }
 }
