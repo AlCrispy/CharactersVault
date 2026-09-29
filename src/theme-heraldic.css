@@ -1,0 +1,293 @@
+/*
+ * ——— Tema Araldico: smalti piatti e tagli obliqui ———
+ * Si attiva con <html data-theme="heraldic"> e sovrascrive il Grimorio (styles.css).
+ * Ogni regola parte da :root[data-theme='heraldic'] per vincere sulla specificità di base.
+ * Colore: Or = valori calcolati e azioni principali, Argento = ciò che scrivi, Rosso = danno, Verde = cura.
+ */
+
+:root[data-theme='heraldic'] {
+  --ink: #0f1626;
+  --ink-2: #131c30;
+  --ink-3: #172238;
+  --ink-4: #1f2d48;
+  --gold: #f2b441;
+  --gold-bright: #ffc95c;
+  --gold-dim: #2f4166;
+  --gold-line: rgba(47, 65, 102, 0.75);
+  --gold-faint: rgba(242, 180, 65, 0.14);
+  --parch: #e7eaf1;
+  --parch-muted: #8e9ab5;
+  --blood: #b8323a;
+  --blood-bright: #e2474b;
+  --verdigris: #38b889;
+  --warning: #f2b441;
+
+  --line-strong: #4a5e8a;
+  --hover: #2a3b5e;
+
+  --font-display: 'Chakra Petch', 'Barlow', system-ui, sans-serif;
+  --font-body: 'Barlow', system-ui, sans-serif;
+  --font-caps: 'Chakra Petch', 'Barlow', system-ui, sans-serif;
+  --radius: 0;
+
+  /* Inclinazione comune: lati dei parallelogrammi, pips e bande. */
+  --tilt: 16deg;
+  --bend: repeating-linear-gradient(106deg, var(--gold-dim) 0 2px, transparent 2px 7px);
+
+  --chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1h10L6 7z' fill='%23f2b441'/%3E%3C/svg%3E");
+
+  font-size: 16px;
+}
+
+:root[data-theme='heraldic'] body {
+  background:
+    repeating-linear-gradient(106deg, rgba(231, 234, 241, 0.018) 0 1px, transparent 1px 16px),
+    radial-gradient(ellipse 110% 60% at 50% -10%, #1b2a4a 0%, rgba(27, 42, 74, 0) 65%),
+    var(--ink);
+}
+
+:root[data-theme='heraldic'] ::selection { background: rgba(242, 180, 65, 0.35); color: var(--parch); }
+
+/* ——— Tipografia ——— */
+
+:root[data-theme='heraldic'] h1, :root[data-theme='heraldic'] h2, :root[data-theme='heraldic'] h3 { font-weight: 700; text-transform: uppercase; text-shadow: none; }
+:root[data-theme='heraldic'] h1 { font-size: 1.9rem; letter-spacing: 0.06em; color: var(--gold); }
+:root[data-theme='heraldic'] h2 { font-size: 1.02rem; letter-spacing: 0.1em; color: var(--parch); }
+:root[data-theme='heraldic'] h3 { font-size: 0.9rem; letter-spacing: 0.1em; color: var(--gold); opacity: 1; }
+
+:root[data-theme='heraldic'] .field-label,
+:root[data-theme='heraldic'] .stat-label,
+:root[data-theme='heraldic'] .ability-name,
+:root[data-theme='heraldic'] .ability-save,
+:root[data-theme='heraldic'] .save-status,
+:root[data-theme='heraldic'] .skill-name small,
+:root[data-theme='heraldic'] details summary,
+:root[data-theme='heraldic'] .tab,
+:root[data-theme='heraldic'] .btn {
+  font-family: var(--font-display);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+:root[data-theme='heraldic'] .field-label { font-size: 0.72rem; }
+:root[data-theme='heraldic'] .stat-label, :root[data-theme='heraldic'] .ability-name, :root[data-theme='heraldic'] .ability-save, :root[data-theme='heraldic'] .save-status { font-size: 0.7rem; }
+:root[data-theme='heraldic'] .skill-name small { font-size: 0.68rem; color: var(--parch-muted); }
+
+:root[data-theme='heraldic'] .muted, :root[data-theme='heraldic'] .empty, :root[data-theme='heraldic'] .tagline, :root[data-theme='heraldic'] .backup-status, :root[data-theme='heraldic'] .sheet-subtitle, :root[data-theme='heraldic'] .warning, :root[data-theme='heraldic'] .message, :root[data-theme='heraldic'] .warning-text { font-style: normal; }
+
+/* ——— Card: angoli tagliati a 45° (il bordo è lo sfondo, il ::before il riempimento) ——— */
+
+:root[data-theme='heraldic'] .card {
+  --cut: 16px;
+  isolation: isolate;
+  border: 0;
+  box-shadow: none;
+  background: var(--gold-dim);
+  clip-path: polygon(var(--cut) 0, 100% 0, 100% calc(100% - var(--cut)), calc(100% - var(--cut)) 100%, 0 100%, 0 var(--cut));
+}
+:root[data-theme='heraldic'] .card::before {
+  inset: 1px;
+  z-index: -1;
+  background: var(--ink-3);
+  background-image: none;
+  /* Taglio ridotto di 2 − √2 ≈ 0.59px: così anche il bordo obliquo è spesso 1px. */
+  --c: calc(var(--cut) - 0.59px);
+  clip-path: polygon(var(--c) 0, 100% 0, 100% calc(100% - var(--c)), calc(100% - var(--c)) 100%, 0 100%, 0 var(--c));
+}
+:root[data-theme='heraldic'] .card.modal { background: var(--line-strong); }
+
+/* Titolo di sezione seguito dalla banda obliqua. */
+:root[data-theme='heraldic'] .ornament { display: none; }
+:root[data-theme='heraldic'] .section-header { margin-bottom: 16px; }
+:root[data-theme='heraldic'] .section-header h2 { flex: 1; display: flex; align-items: center; gap: 12px; min-width: 0; }
+:root[data-theme='heraldic'] .section-header h2::after { content: ''; flex: 1; height: 10px; background: var(--bend); }
+:root[data-theme='heraldic'] .create-form h2::after { content: ''; height: 10px; margin-top: 10px; background: var(--bend); }
+
+/* ——— Campi ——— */
+
+:root[data-theme='heraldic'] input[type='text'], :root[data-theme='heraldic'] select, :root[data-theme='heraldic'] textarea {
+  color: var(--parch);
+  background: var(--ink);
+  border: 1px solid var(--gold-dim);
+  border-bottom-width: 2px;
+  box-shadow: none;
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%);
+}
+:root[data-theme='heraldic'] select { background-image: var(--chevron); background-repeat: no-repeat; background-size: 10px 7px; background-position: right 12px center; }
+:root[data-theme='heraldic'] select option { background: var(--ink-3); }
+:root[data-theme='heraldic'] input[type='text']::placeholder, :root[data-theme='heraldic'] textarea::placeholder { color: #5b6785; font-style: normal; }
+:root[data-theme='heraldic'] input[type='text']:hover, :root[data-theme='heraldic'] select:hover, :root[data-theme='heraldic'] textarea:hover { border-color: var(--line-strong); }
+:root[data-theme='heraldic'] input[type='text']:focus, :root[data-theme='heraldic'] select:focus, :root[data-theme='heraldic'] textarea:focus { border-color: var(--gold); box-shadow: none; background-color: #121b2e; }
+
+/* Checkbox e pips: parallelogrammi. */
+:root[data-theme='heraldic'] input[type='checkbox'] {
+  width: 12px;
+  height: 17px;
+  border: 1.5px solid var(--line-strong);
+  border-radius: 0;
+  background: var(--ink);
+  transform: skewX(calc(-1 * var(--tilt)));
+}
+:root[data-theme='heraldic'] input[type='checkbox']:hover { border-color: var(--gold); }
+:root[data-theme='heraldic'] input[type='checkbox']:checked { border-color: var(--gold); background: var(--gold); box-shadow: none; }
+:root[data-theme='heraldic'] input[type='checkbox']:active { transform: skewX(calc(-1 * var(--tilt))) scale(0.85); }
+:root[data-theme='heraldic'] .pips { gap: 6px; }
+
+/* ——— Pulsanti: parallelogrammi pieni ——— */
+
+:root[data-theme='heraldic'] .btn {
+  --slant: 10px;
+  padding: 8px 24px;
+  font-size: 0.85rem;
+  color: var(--parch);
+  background: var(--ink-4);
+  border: 0;
+  box-shadow: none;
+  clip-path: polygon(var(--slant) 0, 100% 0, calc(100% - var(--slant)) 100%, 0 100%);
+}
+:root[data-theme='heraldic'] .btn:hover { color: var(--gold); background: var(--hover); box-shadow: none; }
+:root[data-theme='heraldic'] .btn:focus-visible { outline: none; box-shadow: inset 0 0 0 2px var(--gold); }
+:root[data-theme='heraldic'] .btn.small { --slant: 8px; padding: 4px 18px; font-size: 0.76rem; }
+:root[data-theme='heraldic'] .btn.primary { color: var(--ink); background: var(--gold); text-shadow: none; }
+:root[data-theme='heraldic'] .btn.primary:hover { color: var(--ink); background: var(--gold-bright); box-shadow: none; }
+:root[data-theme='heraldic'] .btn.primary:focus-visible { box-shadow: inset 0 0 0 2px var(--parch); }
+:root[data-theme='heraldic'] .btn.danger { color: var(--blood-bright); background: rgba(226, 71, 75, 0.14); }
+:root[data-theme='heraldic'] .btn.danger:hover { color: #fff; background: var(--blood-bright); box-shadow: none; }
+:root[data-theme='heraldic'] .btn.ok { color: var(--verdigris); background: rgba(56, 184, 137, 0.14); }
+:root[data-theme='heraldic'] .btn.ok:hover { color: var(--ink); background: var(--verdigris); box-shadow: none; }
+
+:root[data-theme='heraldic'] input[type='checkbox']:focus-visible, :root[data-theme='heraldic'] a:focus-visible { outline-color: var(--gold); }
+
+/* ——— Valori ——— */
+
+:root[data-theme='heraldic'] .stat {
+  padding: 8px 24px;
+  background: var(--ink-4);
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  clip-path: polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
+}
+:root[data-theme='heraldic'] .stat-value { font-family: var(--font-display); font-size: 1.5rem; color: var(--gold); text-shadow: none; }
+
+/* CA: scudo pieno d'oro. */
+:root[data-theme='heraldic'] .stat.shield { padding: 10px 16px 26px; background: var(--gold); clip-path: polygon(0 0, 100% 0, 100% 58%, 50% 100%, 0 58%); }
+:root[data-theme='heraldic'] .stat.shield::before { display: none; }
+:root[data-theme='heraldic'] .stat.shield .stat-label, :root[data-theme='heraldic'] .stat.shield .stat-value { color: var(--ink); }
+
+/* ——— Caratteristiche: facce di un dado ——— */
+
+:root[data-theme='heraldic'] .ability {
+  position: relative;
+  isolation: isolate;
+  padding: 14px 8px 10px;
+  background: var(--gold-dim);
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  clip-path: polygon(16px 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 0 100%, 0 16px);
+}
+:root[data-theme='heraldic'] .ability::before {
+  content: '';
+  position: absolute;
+  inset: 1px;
+  z-index: -1;
+  background: var(--ink-3);
+  clip-path: polygon(15.4px 0, calc(100% - 15.4px) 0, 100% 15.4px, 100% 100%, 0 100%, 0 15.4px);
+}
+:root[data-theme='heraldic'] .ability:focus-within { background: var(--gold); box-shadow: none; }
+:root[data-theme='heraldic'] .ability-mod { font-family: var(--font-display); font-size: 2rem; color: var(--gold); text-shadow: none; }
+:root[data-theme='heraldic'] .field.ability-score input {
+  border: 0;
+  border-radius: 0;
+  background: var(--ink);
+  clip-path: polygon(7px 0, 100% 0, calc(100% - 7px) 100%, 0 100%);
+}
+:root[data-theme='heraldic'] .ability-save output { font-family: var(--font-display); }
+
+/* ——— Abilità ——— */
+
+:root[data-theme='heraldic'] .skill { border-bottom: 1px solid var(--gold-line); }
+:root[data-theme='heraldic'] .prof-gem {
+  width: 11px;
+  height: 16px;
+  border: 1.5px solid var(--line-strong);
+  border-radius: 0;
+  background: var(--ink);
+  transform: skewX(calc(-1 * var(--tilt)));
+}
+:root[data-theme='heraldic'] .prof-gem::after { inset: -5px; border-color: var(--gold); border-radius: 0; }
+:root[data-theme='heraldic'] .prof-toggle:hover .prof-gem { border-color: var(--gold); }
+:root[data-theme='heraldic'] .prof-toggle:active .prof-gem { transform: skewX(calc(-1 * var(--tilt))) scale(0.85); }
+:root[data-theme='heraldic'] .prof-toggle[data-level='proficient'] .prof-gem,
+:root[data-theme='heraldic'] .prof-toggle[data-level='expertise'] .prof-gem { border-color: var(--gold); background: var(--gold); box-shadow: none; }
+:root[data-theme='heraldic'] .prof-toggle[data-level='expertise'] .prof-gem { box-shadow: none; }
+:root[data-theme='heraldic'] .skill-value { font-family: var(--font-display); color: var(--gold); }
+
+/* ——— Punti ferita ——— */
+
+:root[data-theme='heraldic'] .hp-bar {
+  height: 16px;
+  background: var(--ink);
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
+}
+:root[data-theme='heraldic'] .hp-fill { background: var(--blood-bright); box-shadow: none; }
+:root[data-theme='heraldic'] .hp-temp { background: repeating-linear-gradient(106deg, var(--parch-muted) 0 3px, transparent 3px 6px); }
+
+/* ——— Liste ——— */
+
+:root[data-theme='heraldic'] .list-item { background: var(--ink-2); border: 0; border-left: 3px solid var(--gold-dim); }
+:root[data-theme='heraldic'] .list-summary strong { font-family: var(--font-display); font-weight: 600; }
+:root[data-theme='heraldic'] .list-summary span { font-family: var(--font-display); color: var(--gold); }
+:root[data-theme='heraldic'] details summary::before { content: '›'; color: var(--gold); }
+:root[data-theme='heraldic'] .slot-row { border-bottom: 1px solid var(--gold-line); }
+:root[data-theme='heraldic'] .slot-level { font-family: var(--font-display); font-weight: 700; color: var(--gold); }
+
+:root[data-theme='heraldic'] .warning { color: var(--parch); background: rgba(242, 180, 65, 0.1); border: 0; border-left: 3px solid var(--gold); }
+:root[data-theme='heraldic'] .message { border: 0; border-left: 3px solid var(--gold); }
+
+/* ——— Lista personaggi ——— */
+
+:root[data-theme='heraldic'] .logo { filter: none; }
+:root[data-theme='heraldic'] .monogram {
+  padding-top: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--ink);
+  background: var(--gold);
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  text-shadow: none;
+  clip-path: polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%);
+}
+:root[data-theme='heraldic'] .character-name { font-family: var(--font-display); font-weight: 600; font-size: 1.2rem; }
+
+/* ——— Scheda ——— */
+
+:root[data-theme='heraldic'] .sheet-header { background: rgba(15, 22, 38, 0.92); border-bottom: 1px solid var(--gold-dim); box-shadow: none; }
+:root[data-theme='heraldic'] .sheet-title { font-weight: 700; font-size: 1.25rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--parch); text-shadow: none; }
+
+:root[data-theme='heraldic'] .tabbar { background: rgba(15, 22, 38, 0.95); border-top: 1px solid var(--gold-dim); box-shadow: none; }
+:root[data-theme='heraldic'] .tab { isolation: isolate; font-size: 0.7rem; }
+:root[data-theme='heraldic'] .tab[aria-selected='true'] { color: var(--gold); }
+:root[data-theme='heraldic'] .tab[aria-selected='true'] svg { filter: none; }
+:root[data-theme='heraldic'] .tab[aria-selected='true']::before {
+  inset: 7px 4px;
+  z-index: -1;
+  height: auto;
+  background: var(--ink-4);
+  box-shadow: inset 0 -3px 0 var(--gold);
+  clip-path: polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
+}
+
+:root[data-theme='heraldic'] .modal-backdrop { background: rgba(9, 13, 24, 0.8); }
+
+@media (min-width: 1024px) {
+  :root[data-theme='heraldic'] .sheet[data-layout='desktop'] .tabbar { box-shadow: none; border-bottom: 1px solid var(--gold-dim); }
+  :root[data-theme='heraldic'] .sheet[data-layout='desktop'] .tab { font-size: 0.85rem; }
+  :root[data-theme='heraldic'] .sheet[data-layout='desktop'] .tab[aria-selected='true']::before { inset: 8px 0; }
+}

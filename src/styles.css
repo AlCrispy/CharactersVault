@@ -672,3 +672,6 @@ a.character-name:hover { color: var(--gold-bright); }
   .back-label { display: none; }
   .header-actions .btn { padding: 4px 10px; }
 }
+
+.page-footer { display: flex; justify-content: center; margin-top: 32px; }
+.page-footer .field { flex: 0 1 220px; }
