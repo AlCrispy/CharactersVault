@@ -12,3 +12,9 @@ import '@fontsource/chakra-petch/latin-700.css';
 import '@fontsource/barlow/latin-400.css';
 import '@fontsource/barlow/latin-500.css';
 import '@fontsource/barlow/latin-600.css';
+// Tema Abiuratore
+import '@fontsource/marcellus/latin-400.css';
+import '@fontsource/marcellus-sc/latin-400.css';
+import '@fontsource/spectral/latin-400.css';
+import '@fontsource/spectral/latin-400-italic.css';
+import '@fontsource/spectral/latin-600.css';

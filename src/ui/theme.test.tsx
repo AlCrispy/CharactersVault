@@ -24,6 +24,12 @@ describe('tema', () => {
     expect(document.documentElement.dataset.theme).toBe('heraldic');
   });
 
+  it('il selettore offre tutti i temi', () => {
+    render(<ThemePicker />);
+    const labels = [...(screen.getByLabelText('Tema') as HTMLSelectElement).options].map((o) => o.text);
+    expect(labels).toEqual(['Grimorio', 'Araldico', 'Abiuratore']);
+  });
+
   it('il selettore applica e ricorda il tema', async () => {
     const user = userEvent.setup();
     render(<ThemePicker />);

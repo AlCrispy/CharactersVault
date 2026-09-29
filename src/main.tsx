@@ -5,6 +5,7 @@ import './systems';
 import './fonts';
 import './styles.css';
 import './theme-heraldic.css';
+import './theme-abjurer.css';
 import { applyTheme, getStoredTheme } from './ui/theme';
 
 // Prima del render, per non mostrare il tema sbagliato nemmeno per un istante.

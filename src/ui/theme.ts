@@ -3,6 +3,7 @@ import { useState } from 'react';
 export const THEMES = [
   { id: 'grimoire', label: 'Grimorio', color: '#0e0b08' },
   { id: 'heraldic', label: 'Araldico', color: '#0f1626' },
+  { id: 'abjurer', label: 'Abiuratore', color: '#1b1a2e' },
 ] as const;
 export type ThemeId = (typeof THEMES)[number]['id'];
 
