@@ -1,4 +1,15 @@
-import { hitDieKey, SKILL_ABILITY, type Ability, type Attack, type Coins, type Dnd5eCharacter, type HitDieKey, type Skill } from './model';
+import { CLASSES, FULL_CASTER_SLOTS, normalizeName, pactSlotsForLevel, type CasterProgression } from './classes';
+import {
+  hitDieKey,
+  SKILL_ABILITY,
+  type Ability,
+  type Attack,
+  type ClassEntry,
+  type Coins,
+  type Dnd5eCharacter,
+  type HitDieKey,
+  type Skill,
+} from './model';
 
 const KG_PER_COIN = 0.01;
 const KG_PER_STR = 7.5;
@@ -25,8 +36,13 @@ function mod(c: Dnd5eCharacter, a: Ability): number {
   return abilityModifier(c.abilities[a]);
 }
 
+/** Factotum: privilegio del Bardo dal 2° livello. */
+export function hasJackOfAllTrades(c: Dnd5eCharacter): boolean {
+  return c.classes.reduce((sum, k) => sum + (k.classId === 'bard' ? k.level : 0), 0) >= 2;
+}
+
 function jackBonus(c: Dnd5eCharacter): number {
-  return c.jackOfAllTrades ? Math.floor(pb(c) / 2) : 0;
+  return hasJackOfAllTrades(c) ? Math.floor(pb(c) / 2) : 0;
 }
 
 export function savingThrow(c: Dnd5eCharacter, a: Ability): number {
@@ -98,8 +114,68 @@ export function spellAttackBonus(c: Dnd5eCharacter): number | null {
 
 export function hitDiceTotals(c: Dnd5eCharacter): Record<HitDieKey, number> {
   const totals: Record<HitDieKey, number> = { d6: 0, d8: 0, d10: 0, d12: 0 };
-  for (const k of c.classes) totals[hitDieKey(k.hitDie)] += k.level;
+  for (const k of c.classes) if (k.classId) totals[hitDieKey(CLASSES[k.classId].hitDie)] += k.level;
   return totals;
+}
+
+function isThirdCaster(k: ClassEntry): boolean {
+  const third = k.classId && CLASSES[k.classId].thirdCaster;
+  if (!third) return false;
+  const sub = normalizeName(k.subclass);
+  return third.aliases.some((a) => sub.includes(a));
+}
+
+export function casterProgression(k: ClassEntry): CasterProgression {
+  if (!k.classId) return 'none';
+  return isThirdCaster(k) ? 'third' : CLASSES[k.classId].progression;
+}
+
+/** Caratteristica da incantatore suggerita dalla classe (anche per Cavaliere Mistico / Mistificatore Arcano). */
+export function classSpellAbility(k: ClassEntry): Ability | null {
+  if (!k.classId) return null;
+  const info = CLASSES[k.classId];
+  return isThirdCaster(k) && info.thirdCaster ? info.thirdCaster.spellAbility : info.spellAbility;
+}
+
+/** Livello minimo in cui la classe ottiene il privilegio Incantesimi. */
+const MIN_CASTER_LEVEL: Partial<Record<CasterProgression, number>> = { full: 1, artificer: 1, half: 2, third: 3 };
+
+/**
+ * Livello da incantatore per la tabella degli slot (PHB cap. 6, Multiclasse).
+ * Con una sola classe incantatrice si usa la sua tabella (arrotondata per eccesso),
+ * con più classi la somma arrotondata per difetto (l'artefice arrotonda sempre per eccesso).
+ */
+export function casterLevel(c: Dnd5eCharacter): number {
+  const casters = c.classes
+    .map((k) => ({ level: k.level, prog: casterProgression(k) }))
+    .filter(({ level, prog }) => level >= (MIN_CASTER_LEVEL[prog] ?? Infinity));
+  if (casters.length === 1) {
+    const { level, prog } = casters[0];
+    return prog === 'full' ? level : prog === 'third' ? Math.ceil(level / 3) : Math.ceil(level / 2);
+  }
+  return casters.reduce((sum, { level, prog }) => {
+    switch (prog) {
+      case 'full':
+        return sum + level;
+      case 'artificer':
+        return sum + Math.ceil(level / 2);
+      case 'half':
+        return sum + Math.floor(level / 2);
+      default:
+        return sum + Math.floor(level / 3);
+    }
+  }, 0);
+}
+
+/** Slot massimi per livello 1°–9° (esclusa la Magia del patto). */
+export function spellSlots(c: Dnd5eCharacter): number[] {
+  const row = FULL_CASTER_SLOTS[Math.min(20, casterLevel(c))];
+  return Array.from({ length: 9 }, (_, i) => row[i] ?? 0);
+}
+
+export function pactSlots(c: Dnd5eCharacter): { max: number; slotLevel: number } | null {
+  const level = c.classes.reduce((sum, k) => sum + (casterProgression(k) === 'pact' ? k.level : 0), 0);
+  return pactSlotsForLevel(Math.min(20, level));
 }
 
 export function coinCount(coins: Coins): number {
@@ -117,8 +193,8 @@ export function carryingCapacityKg(c: Dnd5eCharacter): number {
 
 export function summary(c: Dnd5eCharacter): string {
   const classes = c.classes
-    .filter((k) => k.name.trim())
-    .map((k) => `${k.name.trim()} ${k.level}`)
+    .filter((k) => k.classId)
+    .map((k) => `${CLASSES[k.classId!].label} ${k.level}`)
     .join(' / ');
   const parts = [c.race.trim(), classes].filter(Boolean);
   return parts.length ? `${parts.join(' · ')} — liv. ${totalLevel(c)}` : `Livello ${totalLevel(c)}`;

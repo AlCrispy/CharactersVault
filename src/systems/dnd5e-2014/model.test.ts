@@ -10,7 +10,7 @@ describe('modello D&D 5e', () => {
   it('createBlank ha 18 abilità, 9 slot e una classe', () => {
     const c = createBlank();
     expect(Object.keys(c.skills)).toHaveLength(18);
-    expect(c.spellcasting.slots).toHaveLength(9);
+    expect(c.spellcasting.slotsUsed).toHaveLength(9);
     expect(c.classes).toHaveLength(1);
   });
 

@@ -10,7 +10,7 @@ function panel() {
 
 function wounded() {
   const c = createBlank();
-  c.classes = [{ ...newClass(), level: 3, hitDie: 8 }];
+  c.classes = [{ ...newClass(), level: 3, classId: 'rogue' }];
   c.hp = { max: 20, current: 20, temp: 5 };
   return c;
 }
@@ -77,6 +77,35 @@ describe('tab Combattimento', () => {
     const { data } = renderSheet(c);
     await user.click(panel().getByRole('button', { name: 'Riposo lungo' }));
     expect(data().hp.current).toBe(1);
+  });
+
+  it('le risorse di classe compaiono solo con la classe', async () => {
+    const user = userEvent.setup();
+    const c = createBlank();
+    c.classes = [{ ...newClass(), level: 5, classId: 'monk' }];
+    const { data } = renderSheet(c);
+    expect(panel().getByLabelText('Arti marziali')).toHaveTextContent('d6');
+    const ki = within(panel().getByRole('group', { name: 'Punti ki spesi' })).getAllByRole('checkbox');
+    expect(ki).toHaveLength(5);
+    await user.click(ki[1]);
+    expect(data().classResourcesUsed.ki).toBe(2);
+  });
+
+  it('senza classi niente risorse né difesa senza armatura', () => {
+    renderSheet();
+    expect(panel().queryByRole('heading', { name: 'Risorse di classe' })).toBeNull();
+    const options = within(panel().getByLabelText('Protezione')).getAllByRole('option').map((o) => o.getAttribute('value'));
+    expect(options).not.toContain('unarmoredMonk');
+    expect(options).not.toContain('unarmoredBarbarian');
+  });
+
+  it('difesa senza armatura del monaco con la classe', () => {
+    const c = createBlank();
+    c.classes = [{ ...newClass(), level: 1, classId: 'monk' }];
+    renderSheet(c);
+    const options = within(panel().getByLabelText('Protezione')).getAllByRole('option').map((o) => o.getAttribute('value'));
+    expect(options).toContain('unarmoredMonk');
+    expect(options).not.toContain('unarmoredBarbarian');
   });
 
   it('CA con armatura media e scudo', async () => {

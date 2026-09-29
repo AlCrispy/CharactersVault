@@ -41,7 +41,7 @@ describe('layout desktop', () => {
       'Dadi vita e riposi',
       'Attacchi',
     ]);
-    expect(headings('Magia ed equipaggiamento')).toEqual(['Incantatore', 'Slot incantesimo', 'Incantesimi', 'Monete', 'Oggetti']);
+    expect(headings('Magia ed equipaggiamento')).toEqual(['Incantatore', 'Incantesimi', 'Monete', 'Oggetti']);
     expect(headings('Privilegi e storia')).toEqual(['Privilegi e tratti', 'Personalità', 'Note']);
 
     await user.click(screen.getByRole('tab', { name: 'Privilegi e storia' }));

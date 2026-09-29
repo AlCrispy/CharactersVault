@@ -3,8 +3,9 @@ import { Checkbox, NumberInput, Section, Select, Stat } from '../../../ui/fields
 import { formatNumber, signed } from '../../../ui/format';
 import { Pips } from '../../../ui/Pips';
 import { applyDamage, applyHealing, longRest, setTempHp, shortRest } from '../actions';
+import { classLevels } from '../classFeatures';
 import { ARMOR_OPTIONS } from '../labels';
-import { HIT_DIE_KEYS } from '../model';
+import { HIT_DIE_KEYS, type ArmorType } from '../model';
 import { armorClass, hitDiceTotals, initiative } from '../rules';
 import { fieldSetter } from './listOps';
 import { ShortRestForm } from './ShortRestForm';
@@ -61,6 +62,13 @@ export function HitPointsSection({ data, onChange }: TabProps) {
   );
 }
 
+/** Difesa senza armatura solo per chi ha la classe (o l'ha già selezionata). */
+function armorOptions(data: TabProps['data']) {
+  const lv = classLevels(data);
+  const allowed: Partial<Record<ArmorType, boolean>> = { unarmoredBarbarian: lv.barbarian > 0, unarmoredMonk: lv.monk > 0 };
+  return ARMOR_OPTIONS.filter((o) => (allowed[o.value] ?? true) || o.value === data.armor.type);
+}
+
 export function DefenseSection({ data, onChange }: TabProps) {
   const set = fieldSetter(data, onChange);
   return (
@@ -70,7 +78,7 @@ export function DefenseSection({ data, onChange }: TabProps) {
         <Stat label="Iniziativa" value={signed(initiative(data))} />
         <Stat label="Velocità" value={`${formatNumber(data.speedMeters)} m`} />
       </div>
-      <Select label="Protezione" value={data.armor.type} options={ARMOR_OPTIONS} onChange={(v) => set('armor', { ...data.armor, type: v })} />
+      <Select label="Protezione" value={data.armor.type} options={armorOptions(data)} onChange={(v) => set('armor', { ...data.armor, type: v })} />
       <div className="grid-3">
         {ARMOR_WITH_BASE.has(data.armor.type) && (
           <NumberInput label="CA base armatura" value={data.armor.base} min={0} max={30} onChange={(v) => set('armor', { ...data.armor, base: v })} />

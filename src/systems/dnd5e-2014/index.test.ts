@@ -38,7 +38,7 @@ describe('modulo dnd5e', () => {
     const c = dnd5e.withName(dnd5e.createBlank(), 'Lia');
     expect(dnd5e.getName(c)).toBe('Lia');
     c.race = 'Elfo';
-    c.classes = [{ ...newClass(), name: 'Mago', level: 5 }];
+    c.classes = [{ ...newClass(), classId: 'wizard', level: 5 }];
     expect(dnd5e.summary(c)).toBe('Elfo · Mago 5 — liv. 5');
   });
 });

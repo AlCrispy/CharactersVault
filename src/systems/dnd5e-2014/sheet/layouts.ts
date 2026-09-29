@@ -1,6 +1,7 @@
 import { Backpack, Crown, Feather, ScrollText, Shield, Swords, WandSparkles, type LucideIcon } from 'lucide-react';
 import type { ComponentType } from 'react';
 import { AttacksSection } from './AttacksSection';
+import { ClassResourcesSection } from './ClassResourcesSection';
 import { ConditionsSection, DefenseSection, HitPointsSection, RestSection } from './CombatTab';
 import { FeaturesSection } from './FeaturesTab';
 import { CoinsSection, ItemsSection } from './InventoryTab';
@@ -36,7 +37,7 @@ export const MOBILE_TABS: TabLayout[] = [
     id: 'combat',
     label: 'Combattimento',
     Icon: Swords,
-    columns: single(HitPointsSection, DefenseSection, ConditionsSection, RestSection, AttacksSection),
+    columns: single(HitPointsSection, DefenseSection, ConditionsSection, ClassResourcesSection, RestSection, AttacksSection),
   },
   { id: 'spells', label: 'Incantesimi', Icon: WandSparkles, columns: single(CasterSection, SlotsSection, SpellListSection) },
   { id: 'inventory', label: 'Inventario', Icon: Backpack, columns: single(CoinsSection, ItemsSection) },
@@ -51,7 +52,7 @@ export const DESKTOP_TABS: TabLayout[] = [
     label: 'Eroe',
     Icon: Shield,
     columns: [
-      { sections: [IdentitySection, ClassesSection, ProficienciesSection] },
+      { sections: [IdentitySection, ClassesSection, ClassResourcesSection, ProficienciesSection] },
       { sections: [AbilitiesSection, SkillsSection] },
       { sections: [HitPointsSection, DefenseSection, ConditionsSection, RestSection, AttacksSection] },
     ],

@@ -46,11 +46,11 @@ describe('danno e cura', () => {
 
 describe('riposo breve', () => {
   const c = char((c) => {
-    c.classes = [{ ...newClass(), level: 5, hitDie: 8 }];
+    c.classes = [{ ...newClass(), level: 5, classId: 'rogue' }];
     c.hitDiceUsed.d8 = 1;
     c.hp = { max: 40, current: 10, temp: 0 };
-    c.spellcasting.slots[0] = { max: 4, used: 3 };
-    c.spellcasting.pact = { slotLevel: 3, max: 2, used: 2 };
+    c.spellcasting.slotsUsed[0] = 3;
+    c.spellcasting.pactUsed = 2;
     c.features = [
       { ...newFeature(), uses: { max: 1, used: 1, recharge: 'short' } },
       { ...newFeature(), uses: { max: 1, used: 1, recharge: 'long' } },
@@ -77,22 +77,22 @@ describe('riposo breve', () => {
     const r = shortRest(c, { spend: noSpend, hpRecovered: 0 });
     expect(r.features[0].uses?.used).toBe(0);
     expect(r.features[1].uses?.used).toBe(1);
-    expect(r.spellcasting.pact.used).toBe(0);
-    expect(r.spellcasting.slots[0].used).toBe(3);
+    expect(r.spellcasting.pactUsed).toBe(0);
+    expect(r.spellcasting.slotsUsed[0]).toBe(3);
   });
 });
 
 describe('riposo lungo', () => {
   const c = char((c) => {
     c.classes = [
-      { ...newClass(), level: 3, hitDie: 10 },
-      { ...newClass(), level: 2, hitDie: 6 },
+      { ...newClass(), level: 3, classId: 'fighter' },
+      { ...newClass(), level: 2, classId: 'wizard' },
     ];
     c.hitDiceUsed = { d6: 2, d8: 0, d10: 3, d12: 0 };
     c.hp = { max: 40, current: 3, temp: 4 };
-    c.spellcasting.slots[0] = { max: 4, used: 4 };
-    c.spellcasting.slots[2] = { max: 2, used: 1 };
-    c.spellcasting.pact = { slotLevel: 1, max: 1, used: 1 };
+    c.spellcasting.slotsUsed[0] = 4;
+    c.spellcasting.slotsUsed[2] = 1;
+    c.spellcasting.pactUsed = 1;
     c.features = [
       { ...newFeature(), uses: { max: 1, used: 1, recharge: 'short' } },
       { ...newFeature(), uses: { max: 1, used: 1, recharge: 'long' } },
@@ -113,7 +113,7 @@ describe('riposo lungo', () => {
 
   it('recupera almeno un dado vita', () => {
     const lvl1 = char((c) => {
-      c.classes = [{ ...newClass(), level: 1, hitDie: 12 }];
+      c.classes = [{ ...newClass(), level: 1, classId: 'barbarian' }];
       c.hitDiceUsed.d12 = 1;
     });
     expect(longRest(lvl1).hitDiceUsed.d12).toBe(0);
@@ -121,8 +121,8 @@ describe('riposo lungo', () => {
 
   it('ripristina slot e privilegi breve/lungo', () => {
     const r = longRest(c);
-    expect(r.spellcasting.slots.every((s) => s.used === 0)).toBe(true);
-    expect(r.spellcasting.pact.used).toBe(0);
+    expect(r.spellcasting.slotsUsed.every((u) => u === 0)).toBe(true);
+    expect(r.spellcasting.pactUsed).toBe(0);
     expect(r.features.map((f) => f.uses?.used ?? null)).toEqual([0, 0, 1, null]);
   });
 

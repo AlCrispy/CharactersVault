@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { newId } from '../../core/id';
+import { CLASS_IDS } from './classes';
 
 export const ABILITIES = ['str', 'dex', 'con', 'int', 'wis', 'cha'] as const;
 export type Ability = (typeof ABILITIES)[number];
@@ -51,14 +52,12 @@ const int = (min: number, max: number) => z.number().int().min(min).max(max);
 const bonus = int(-99, 99);
 const count = int(0, 9_999_999);
 
-const hitDieSchema = z.union([z.literal(6), z.literal(8), z.literal(10), z.literal(12)]);
-
 const classSchema = z.object({
   id: z.string(),
-  name: z.string(),
+  /** `null` finché la classe non è stata scelta. */
+  classId: z.enum(CLASS_IDS).nullable(),
   subclass: z.string(),
   level: int(1, 20),
-  hitDie: hitDieSchema,
 });
 
 const attackSchema = z.object({
@@ -73,8 +72,6 @@ const attackSchema = z.object({
   damageType: z.string(),
   notes: z.string(),
 });
-
-const slotSchema = z.object({ max: int(0, 99), used: int(0, 99) });
 
 const spellSchema = z.object({
   id: z.string(),
@@ -114,7 +111,6 @@ export const dnd5eSchema = z.object({
   abilities: z.record(z.enum(ABILITIES), int(1, 30)),
   saveProficiencies: z.record(z.enum(ABILITIES), z.boolean()),
   skills: z.record(z.enum(skillKeys), z.object({ level: z.enum(PROFICIENCY_LEVELS), bonus })),
-  jackOfAllTrades: z.boolean(),
   otherProficiencies: z.object({
     languages: z.string(),
     tools: z.string(),
@@ -127,12 +123,15 @@ export const dnd5eSchema = z.object({
   hp: z.object({ max: int(0, 999), current: int(0, 999), temp: int(0, 999) }),
   deathSaves: z.object({ successes: int(0, 3), failures: int(0, 3) }),
   exhaustion: int(0, 6),
+  /** Usi spesi delle risorse di classe (classFeatures.ts), per id. */
+  classResourcesUsed: z.record(z.string(), int(0, 999)),
   hitDiceUsed: z.record(z.enum(HIT_DIE_KEYS), int(0, 20)),
   attacks: z.array(attackSchema),
   spellcasting: z.object({
     ability: z.enum(ABILITIES).nullable(),
-    slots: z.array(slotSchema).length(9),
-    pact: z.object({ slotLevel: int(1, 5), max: int(0, 4), used: int(0, 4) }),
+    // I massimi derivano dalle classi (rules.ts): qui solo gli slot spesi.
+    slotsUsed: z.array(int(0, 99)).length(9),
+    pactUsed: int(0, 99),
     spells: z.array(spellSchema),
   }),
   features: z.array(featureSchema),
@@ -153,7 +152,6 @@ export type Dnd5eCharacter = z.infer<typeof dnd5eSchema>;
 export type ClassEntry = Dnd5eCharacter['classes'][number];
 export type Attack = Dnd5eCharacter['attacks'][number];
 export type Spellcasting = Dnd5eCharacter['spellcasting'];
-export type SpellSlot = Spellcasting['slots'][number];
 export type Spell = Spellcasting['spells'][number];
 export type Feature = Dnd5eCharacter['features'][number];
 export type Inventory = Dnd5eCharacter['inventory'];
@@ -161,7 +159,7 @@ export type Item = Inventory['items'][number];
 export type Coins = Inventory['coins'];
 
 export function newClass(): ClassEntry {
-  return { id: newId(), name: '', subclass: '', level: 1, hitDie: 8 };
+  return { id: newId(), classId: null, subclass: '', level: 1 };
 }
 
 export function newAttack(): Attack {
@@ -203,7 +201,6 @@ export function createBlank(): Dnd5eCharacter {
     abilities: { str: 10, dex: 10, con: 10, int: 10, wis: 10, cha: 10 },
     saveProficiencies: { str: false, dex: false, con: false, int: false, wis: false, cha: false },
     skills: Object.fromEntries(SKILLS.map((s) => [s, { level: 'none', bonus: 0 }])) as Dnd5eCharacter['skills'],
-    jackOfAllTrades: false,
     otherProficiencies: { languages: '', tools: '', weapons: '', armor: '' },
     armor: { type: 'none', base: 10, shield: false, bonus: 0 },
     initiativeBonus: 0,
@@ -211,12 +208,13 @@ export function createBlank(): Dnd5eCharacter {
     hp: { max: 10, current: 10, temp: 0 },
     deathSaves: { successes: 0, failures: 0 },
     exhaustion: 0,
+    classResourcesUsed: {},
     hitDiceUsed: { d6: 0, d8: 0, d10: 0, d12: 0 },
     attacks: [],
     spellcasting: {
       ability: null,
-      slots: Array.from({ length: 9 }, () => ({ max: 0, used: 0 })),
-      pact: { slotLevel: 1, max: 0, used: 0 },
+      slotsUsed: Array.from({ length: 9 }, () => 0),
+      pactUsed: 0,
       spells: [],
     },
     features: [],

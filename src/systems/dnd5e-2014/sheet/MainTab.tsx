@@ -1,13 +1,14 @@
 import { Checkbox, NumberInput, Section, Select, Stat, TextArea, TextInput } from '../../../ui/fields';
 import { signed } from '../../../ui/format';
+import { CLASS_OPTIONS, CLASSES, type ClassId } from '../classes';
 import { ABILITY_LABEL, SKILL_LABEL } from '../labels';
-import { ABILITIES, HIT_DIE_KEYS, newClass, SKILL_ABILITY, SKILLS, type HitDie, type HitDieKey } from '../model';
-import { abilityModifier, passivePerception, proficiencyBonus, savingThrow, skillBonus, totalLevel } from '../rules';
+import { ABILITIES, newClass, SKILL_ABILITY, SKILLS, type ClassEntry } from '../model';
+import { abilityModifier, classSpellAbility, hasJackOfAllTrades, passivePerception, proficiencyBonus, savingThrow, skillBonus, totalLevel } from '../rules';
 import { fieldSetter, removeById, updateById } from './listOps';
 import { ProficiencyToggle } from './ProficiencyToggle';
 import type { TabProps } from './types';
 
-const DIE_OPTIONS = HIT_DIE_KEYS.map((k) => ({ value: k, label: k }));
+const CLASS_SELECT_OPTIONS: { value: ClassId | 'none'; label: string }[] = [{ value: 'none', label: '— Scegli —' }, ...CLASS_OPTIONS];
 
 export function IdentitySection({ data, onChange }: TabProps) {
   const set = fieldSetter(data, onChange);
@@ -28,6 +29,11 @@ export function IdentitySection({ data, onChange }: TabProps) {
 export function ClassesSection({ data, onChange }: TabProps) {
   const set = fieldSetter(data, onChange);
   const level = totalLevel(data);
+  // Se la caratteristica da incantatore non è ancora scelta, la prende dalla prima classe incantatrice.
+  const setClasses = (classes: ClassEntry[]) => {
+    const ability = data.spellcasting.ability ?? classes.map(classSpellAbility).find((a) => a !== null) ?? null;
+    onChange({ ...data, classes, spellcasting: { ...data.spellcasting, ability } });
+  };
   return (
     <Section
       title="Classi"
@@ -38,23 +44,24 @@ export function ClassesSection({ data, onChange }: TabProps) {
       }
     >
       {data.classes.map((k) => {
-        const patch = (p: Partial<typeof k>) => set('classes', updateById(data.classes, k.id, p));
+        const patch = (p: Partial<ClassEntry>) => setClasses(updateById(data.classes, k.id, p));
+        const info = k.classId ? CLASSES[k.classId] : null;
         return (
           <div className="row" key={k.id}>
-            <TextInput label="Classe" value={k.name} onChange={(v) => patch({ name: v })} />
+            <Select
+              label="Classe"
+              value={k.classId ?? 'none'}
+              options={CLASS_SELECT_OPTIONS}
+              onChange={(v) => patch({ classId: v === 'none' ? null : v })}
+            />
             <TextInput label="Sottoclasse" value={k.subclass} onChange={(v) => patch({ subclass: v })} />
             <NumberInput label="Livello" className="narrow" value={k.level} min={1} max={20} onChange={(v) => patch({ level: v })} />
-            <Select<HitDieKey>
-              label="Dado vita"
-              value={`d${k.hitDie}`}
-              options={DIE_OPTIONS}
-              onChange={(v) => patch({ hitDie: Number(v.slice(1)) as HitDie })}
-            />
+            <Stat label="Dado vita" value={info ? `d${info.hitDie}` : '—'} />
             <button
               type="button"
               className="btn small danger"
-              aria-label={`Rimuovi classe ${k.name}`}
-              onClick={() => set('classes', removeById(data.classes, k.id))}
+              aria-label={`Rimuovi classe ${info?.label ?? ''}`.trim()}
+              onClick={() => setClasses(removeById(data.classes, k.id))}
             >
               ✕
             </button>
@@ -114,11 +121,7 @@ export function SkillsSection({ data, onChange }: TabProps) {
   const set = fieldSetter(data, onChange);
   return (
     <Section title="Abilità">
-      <Checkbox
-        label="Factotum (metà competenza alle prove senza competenza)"
-        checked={data.jackOfAllTrades}
-        onChange={(v) => set('jackOfAllTrades', v)}
-      />
+      {hasJackOfAllTrades(data) && <p className="muted">Factotum (Bardo): metà competenza alle prove senza competenza.</p>}
       <ul className="skills">
         {SKILLS.map((s) => {
           const name = SKILL_LABEL[s];

@@ -1,4 +1,5 @@
 import { HIT_DIE_KEYS, type Dnd5eCharacter, type Feature, type HitDieKey, type Recharge } from './model';
+import { rechargeClassResources } from './classFeatures';
 import { hitDiceTotals, totalLevel } from './rules';
 
 export interface ShortRestOptions {
@@ -39,7 +40,8 @@ export function shortRest(c: Dnd5eCharacter, opts: ShortRestOptions): Dnd5eChara
     ...applyHealing(c, opts.hpRecovered),
     hitDiceUsed,
     features: rechargeFeatures(c.features, ['short']),
-    spellcasting: { ...c.spellcasting, pact: { ...c.spellcasting.pact, used: 0 } },
+    classResourcesUsed: rechargeClassResources(c, 'short'),
+    spellcasting: { ...c.spellcasting, pactUsed: 0 },
   };
 }
 
@@ -55,12 +57,9 @@ export function longRest(c: Dnd5eCharacter): Dnd5eCharacter {
     ...c,
     hp: { ...c.hp, current: c.hp.max, temp: 0 },
     hitDiceUsed,
-    spellcasting: {
-      ...c.spellcasting,
-      slots: c.spellcasting.slots.map((s) => ({ ...s, used: 0 })),
-      pact: { ...c.spellcasting.pact, used: 0 },
-    },
+    spellcasting: { ...c.spellcasting, slotsUsed: c.spellcasting.slotsUsed.map(() => 0), pactUsed: 0 },
     features: rechargeFeatures(c.features, ['short', 'long']),
+    classResourcesUsed: rechargeClassResources(c, 'long'),
     deathSaves: { successes: 0, failures: 0 },
     exhaustion: Math.max(0, c.exhaustion - 1),
   };

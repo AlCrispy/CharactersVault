@@ -29,6 +29,8 @@ describe('tab Principale', () => {
   it('maestria e factotum cambiano i bonus delle abilità', async () => {
     const user = userEvent.setup();
     renderSheet();
+    expect(panel().queryByText(/Factotum/)).toBeNull();
+    await user.selectOptions(panel().getByLabelText('Classe'), 'bard');
     const level = panel().getByLabelText('Livello');
     await user.clear(level);
     await user.type(level, '5');
@@ -40,7 +42,7 @@ describe('tab Principale', () => {
     expect(stealth).toHaveAccessibleName('Competenza Furtività: maestria');
     expect(panel().getByLabelText('Bonus Furtività')).toHaveTextContent('+6');
 
-    await user.click(panel().getByLabelText(/Factotum/));
+    expect(panel().getByText(/Factotum/)).toBeInTheDocument();
     expect(panel().getByLabelText('Bonus Atletica')).toHaveTextContent('+1');
   });
 
@@ -52,6 +54,16 @@ describe('tab Principale', () => {
     expect(panel().getByLabelText('Livello totale')).toHaveTextContent('2');
     await user.click(panel().getAllByRole('button', { name: /Rimuovi classe/ })[0]);
     expect(data().classes).toHaveLength(1);
+  });
+
+  it('la classe scelta dà dado vita e caratteristica da incantatore', async () => {
+    const user = userEvent.setup();
+    const { data } = renderSheet();
+    expect(panel().getByLabelText('Dado vita')).toHaveTextContent('—');
+    await user.selectOptions(panel().getByLabelText('Classe'), 'paladin');
+    expect(data().classes[0].classId).toBe('paladin');
+    expect(panel().getByLabelText('Dado vita')).toHaveTextContent('d10');
+    expect(data().spellcasting.ability).toBe('cha');
   });
 
   it('modifica identità', async () => {

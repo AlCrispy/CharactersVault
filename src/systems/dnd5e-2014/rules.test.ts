@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import type { ClassId } from './classes';
 import { createBlank, newAttack, newClass, newItem, type Dnd5eCharacter } from './model';
 import {
   abilityModifier,
@@ -6,14 +7,18 @@ import {
   attackDamage,
   attackToHit,
   carryingCapacityKg,
+  casterLevel,
+  classSpellAbility,
   hitDiceTotals,
   initiative,
+  pactSlots,
   passivePerception,
   proficiencyBonus,
   savingThrow,
   skillBonus,
   spellAttackBonus,
   spellSaveDC,
+  spellSlots,
   summary,
   totalLevel,
   totalWeightKg,
@@ -83,12 +88,16 @@ describe('tiri salvezza e abilità', () => {
 
   it('factotum aggiunge metà competenza (per difetto) solo senza competenza', () => {
     const c = char((c) => {
-      atLevel(5)(c);
-      c.jackOfAllTrades = true;
+      c.classes = [{ ...newClass(), classId: 'bard', level: 5 }];
       c.skills.stealth = { level: 'proficient', bonus: 0 };
     });
     expect(skillBonus(c, 'athletics')).toBe(1);
     expect(skillBonus(c, 'stealth')).toBe(3);
+  });
+
+  it('factotum solo dal 2° livello da bardo', () => {
+    expect(skillBonus(withClasses(['bard', 1]), 'athletics')).toBe(0);
+    expect(skillBonus(withClasses(['bard', 2]), 'athletics')).toBe(1);
   });
 
   it('percezione passiva', () => {
@@ -101,9 +110,8 @@ describe('tiri salvezza e abilità', () => {
 
   it('iniziativa con factotum e bonus', () => {
     const c = char((c) => {
-      atLevel(5)(c);
+      c.classes = [{ ...newClass(), classId: 'bard', level: 5 }];
       c.abilities.dex = 14;
-      c.jackOfAllTrades = true;
       c.initiativeBonus = 5;
     });
     expect(initiative(c)).toBe(2 + 1 + 5);
@@ -171,9 +179,9 @@ describe('dadi vita', () => {
   it('totali per tipo con multiclasse', () => {
     const c = char((c) => {
       c.classes = [
-        { ...newClass(), level: 3, hitDie: 10 },
-        { ...newClass(), level: 2, hitDie: 6 },
-        { ...newClass(), level: 1, hitDie: 10 },
+        { ...newClass(), level: 3, classId: 'fighter' },
+        { ...newClass(), level: 2, classId: 'wizard' },
+        { ...newClass(), level: 1, classId: 'fighter' },
       ];
     });
     expect(hitDiceTotals(c)).toEqual({ d6: 2, d8: 0, d10: 4, d12: 0 });
@@ -203,8 +211,8 @@ describe('summary', () => {
     const c = char((c) => {
       c.race = 'Elfo';
       c.classes = [
-        { ...newClass(), name: 'Mago', level: 3 },
-        { ...newClass(), name: 'Guerriero', level: 2 },
+        { ...newClass(), classId: 'wizard', level: 3 },
+        { ...newClass(), classId: 'fighter', level: 2 },
       ];
     });
     expect(summary(c)).toBe('Elfo · Mago 3 / Guerriero 2 — liv. 5');
@@ -212,5 +220,67 @@ describe('summary', () => {
 
   it('senza dati', () => {
     expect(summary(createBlank())).toBe('Livello 1');
+  });
+});
+
+function withClasses(...entries: [ClassId, number, string?][]) {
+  return char((c) => {
+    c.classes = entries.map(([classId, level, subclass = '']) => ({ ...newClass(), classId, level, subclass }));
+  });
+}
+
+describe('slot incantesimo', () => {
+  it.each<[string, [ClassId, number, string?][], number]>([
+    ['mago 5', [['wizard', 5]], 5],
+    ['paladino 1 non ha slot', [['paladin', 1]], 0],
+    ['paladino 5 arrotonda per eccesso', [['paladin', 5]], 3],
+    ['artefice 1 ha slot', [['artificer', 1]], 1],
+    ['guerriero senza sottoclasse', [['fighter', 7]], 0],
+    ['cavaliere mistico 7', [['fighter', 7, 'Cavaliere Mistico']], 3],
+    ['arcane trickster 4', [['rogue', 4, 'Arcane Trickster']], 2],
+    ['multiclasse: mago 3 / paladino 5', [['wizard', 3], ['paladin', 5]], 5],
+    ['multiclasse: paladino 3 / ranger 3 per difetto', [['paladin', 3], ['ranger', 3]], 2],
+    ['multiclasse: chierico 1 / artefice 3', [['cleric', 1], ['artificer', 3]], 3],
+    ['multiclasse con classe non incantatrice', [['paladin', 5], ['fighter', 2]], 3],
+    ['il warlock non conta', [['warlock', 5], ['sorcerer', 2]], 2],
+  ])('%s', (_, entries, expected) => {
+    expect(casterLevel(withClasses(...entries))).toBe(expected);
+  });
+
+  it('tabella del mago di 9° livello', () => {
+    expect(spellSlots(withClasses(['wizard', 9]))).toEqual([4, 3, 3, 3, 1, 0, 0, 0, 0]);
+  });
+
+  it('livello 20', () => {
+    expect(spellSlots(withClasses(['cleric', 20]))).toEqual([4, 3, 3, 3, 3, 2, 2, 1, 1]);
+  });
+
+  it('paladino 20 come incantatore di 10°', () => {
+    expect(spellSlots(withClasses(['paladin', 20]))).toEqual([4, 3, 3, 3, 2, 0, 0, 0, 0]);
+  });
+
+  it('nessuno slot senza classi incantatrici', () => {
+    expect(spellSlots(createBlank()).every((n) => n === 0)).toBe(true);
+  });
+});
+
+describe('magia del patto', () => {
+  it.each([
+    [1, 1, 1], [2, 2, 1], [3, 2, 2], [5, 2, 3], [7, 2, 4], [9, 2, 5], [11, 3, 5], [17, 4, 5], [20, 4, 5],
+  ])('warlock %i → %i slot di %i°', (level, max, slotLevel) => {
+    expect(pactSlots(withClasses(['warlock', level]))).toEqual({ max, slotLevel });
+  });
+
+  it('assente senza livelli da warlock', () => {
+    expect(pactSlots(withClasses(['wizard', 5]))).toBeNull();
+  });
+});
+
+describe('caratteristica da incantatore della classe', () => {
+  it('dipende da classe e sottoclasse', () => {
+    const [cleric, fighter, ek] = withClasses(['cleric', 1], ['fighter', 3], ['fighter', 3, 'Cavaliere mistico']).classes;
+    expect(classSpellAbility(cleric)).toBe('wis');
+    expect(classSpellAbility(fighter)).toBeNull();
+    expect(classSpellAbility(ek)).toBe('int');
   });
 });

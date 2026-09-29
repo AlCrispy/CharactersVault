@@ -3,7 +3,7 @@ import { signed } from '../../../ui/format';
 import { Pips } from '../../../ui/Pips';
 import { ABILITY_OPTIONS } from '../labels';
 import { newSpell, type Ability, type Spell, type Spellcasting } from '../model';
-import { spellAttackBonus, spellSaveDC } from '../rules';
+import { pactSlots, spellAttackBonus, spellSaveDC, spellSlots } from '../rules';
 import { removeById, updateById } from './listOps';
 import type { TabProps } from './types';
 
@@ -37,51 +37,47 @@ export function CasterSection(props: TabProps) {
 
 export function SlotsSection(props: TabProps) {
   const { sc, setSc } = spellcastingOf(props);
+  const max = spellSlots(props.data);
+  const pact = pactSlots(props.data);
+  const levels = max.flatMap((m, i) => (m > 0 ? [i] : []));
+  const setUsed = (i: number, v: number) => setSc({ slotsUsed: sc.slotsUsed.map((u, j) => (j === i ? v : u)) });
+  // Compare solo con classi (o sottoclassi) che lanciano incantesimi.
+  if (levels.length === 0 && !pact) return null;
   return (
       <Section title="Slot incantesimo">
-        <ul className="slots">
-          {sc.slots.map((slot, i) => (
-            <li className="slot-row" key={i}>
-              <span className="slot-level">{i + 1}°</span>
-              <NumberInput
-                hideLabel
-                label={`Slot ${i + 1}° livello`}
-                className="narrow"
-                value={slot.max}
-                min={0}
-                max={9}
-                onChange={(v) => setSc({ slots: sc.slots.map((s, j) => (j === i ? { max: v, used: Math.min(s.used, v) } : s)) })}
-              />
-              <Pips
-                hideLabel
-                label={`Slot usati ${i + 1}° livello`}
-                count={slot.used}
-                max={slot.max}
-                onChange={(v) => setSc({ slots: sc.slots.map((s, j) => (j === i ? { ...s, used: v } : s)) })}
-              />
-            </li>
-          ))}
-        </ul>
-        <h3>Magia del patto</h3>
-        <div className="row">
-          <NumberInput
-            label="Livello slot patto"
-            className="narrow"
-            value={sc.pact.slotLevel}
-            min={1}
-            max={5}
-            onChange={(v) => setSc({ pact: { ...sc.pact, slotLevel: v } })}
-          />
-          <NumberInput
-            label="Slot patto"
-            className="narrow"
-            value={sc.pact.max}
-            min={0}
-            max={4}
-            onChange={(v) => setSc({ pact: { ...sc.pact, max: v, used: Math.min(sc.pact.used, v) } })}
-          />
-          <Pips label="Slot patto usati" count={sc.pact.used} max={sc.pact.max} onChange={(v) => setSc({ pact: { ...sc.pact, used: v } })} />
-        </div>
+        {levels.length > 0 && (
+          <ul className="slots">
+            {levels.map((i) => (
+              <li className="slot-row" key={i}>
+                <span className="slot-level">{i + 1}°</span>
+                <Pips
+                  hideLabel
+                  label={`Slot usati ${i + 1}° livello`}
+                  count={Math.min(sc.slotsUsed[i], max[i])}
+                  max={max[i]}
+                  onChange={(v) => setUsed(i, v)}
+                />
+              </li>
+            ))}
+          </ul>
+        )}
+        {pact && (
+          <>
+            <h3>Magia del patto</h3>
+            <ul className="slots">
+              <li className="slot-row">
+                <span className="slot-level">{pact.slotLevel}°</span>
+                <Pips
+                  hideLabel
+                  label="Slot patto usati"
+                  count={Math.min(sc.pactUsed, pact.max)}
+                  max={pact.max}
+                  onChange={(v) => setSc({ pactUsed: v })}
+                />
+              </li>
+            </ul>
+          </>
+        )}
       </Section>
   );
 }
